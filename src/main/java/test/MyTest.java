@@ -23,7 +23,8 @@ public class MyTest {
 
         try{
 	        URL url = new URL(TestConfig.URL+"students");
-	        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+	        HttpURLConnection httpURLConnection = (HttpURLConnection)
+		    url.openConnection();
 	        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
 	        String line = "";
 	        StringBuilder stringBuilder = new StringBuilder();
@@ -36,7 +37,7 @@ public class MyTest {
 	        String json = stringBuilder.toString();
 	        List<Student> students = gson.fromJson(json, new TypeToken<List<Student>>(){}.getType());
 	        //String s = stringBuilder.toString();
-	        Assert.assertEquals(students.get(0).getName(), "Thanh");
+	        Assert.assertEquals(students.get(0).getName(), "Milo");
 	        
 	    } catch (MalformedURLException e) {
 	        e.printStackTrace();
