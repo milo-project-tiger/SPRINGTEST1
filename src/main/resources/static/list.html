@@ -2,67 +2,61 @@
   <head>
     <link rel="stylesheet" type="text/css"  href="list.css" />
     </head>
-<h2>Add new student</h2>
-Name: <input type="text" id="name"/>
-<button onclick="add()">Add</button>
-
-<h2>List of students</h2>
-<div id="studentList"></div>
-
-<script>
-
-getStudents()
-
-
-    function add(){ //post
-
-      var name = document.getElementById('name').value //get value from an html element
-
-     fetch('http://localhost:9090/students', {
-             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+  <h2>Add new Product</h2>
+  Name: <input type="text" id="name"/>
+  <button onclick="add()">Add</button>
+  
+  <h2>List of Products</h2>
+  <div id="productList"></div>
+  
+  <script>
+    getProducts();
+    
+    function add(){ //put
+       var name = document.getElementById('name').value //get value from an html element
+       fetch('http://localhost:8080/addProduct/', {
+            headers: {
+             'Accept': 'application/json',
+             'Content-Type': 'application/json'
              },
-             method: "POST",
+             method: "PUT",
              body: JSON.stringify({name: name})
 
-     }).then(res => getStudents())
-
+     }).then(res => getProducts())
 
         console.log('Added')
     }
 
-    function getStudents(){
+    function getProducts(){
 
-        var studentList = document.getElementById('studentList')
+        var productList = document.getElementById('productList')
 
-        studentList.innerHTML = ''
-
-        fetch('http://localhost:9090/students')
+        productList.innerHTML = ''
+        fetch('http://localhost:8080/getAllProducts/')
         .then(res => res.json())
         .then(json => {
 
-            for(i=0; i<json.length; i++){
+           for(i=0; i<json.length; i++){
 
-                var id = json[i].id
+             var id = json[i].id
+		
+               var deleteLink = `<button onclick='deleteProduct(${id})'>Delete</button>`
+	                                                      // 
+               productList.innerHTML += '<div>' + '<span>' + json[i].id + '<span>'
+		   +  '<span>' + json[i].name +  '<span>'   + deleteLink  + '</div>'
 
-                var deleteLink = `<button onclick='deleteStudent(${id})'>Delete</button>`
+           }
 
-               studentList.innerHTML += '<div>'+ json[i].name + deleteLink + '</div>'
-
-            }
-
-        })
+       })
 
     }
-
-
-    function deleteStudent(id){
-          fetch('http://localhost:9090/students/'+id, {
+    
+    function deleteProduct(id){
+          fetch('http://localhost:8080/products/'+id, {
             method: 'delete'
           })
-          .then(res=> getStudents())
+          .then(res=> getProducts())
     }
-
+    
     </script>
 </html>

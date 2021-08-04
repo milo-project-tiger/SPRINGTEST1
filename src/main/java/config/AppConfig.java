@@ -49,9 +49,9 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5433/minh");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("minhdinh");
+        dataSource.setUrl("jdbc:postgresql://localhost:5432/helloworld");
+        dataSource.setUsername("milk3");
+        dataSource.setPassword("pass");
 
         sessionFactoryBean.setDataSource(dataSource);
         sessionFactoryBean.setHibernateProperties(properties);
@@ -64,7 +64,6 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         HibernateTransactionManager tx = new HibernateTransactionManager(sessionFactory);
         return tx;
     }
-
 }
 
 

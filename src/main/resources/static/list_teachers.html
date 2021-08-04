@@ -14,7 +14,7 @@ getTeachers()
 
       var name = document.getElementById('name').value //get value from an html element
 
-     fetch('http://localhost:9090/teachers', {
+     fetch('http://localhost:8080/teachers', {
              headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -34,7 +34,7 @@ getTeachers()
 
         teacherList.innerHTML = ''
 
-        fetch('http://localhost:9090/teachers')
+        fetch('http://localhost:8080/teachers')
         .then(res => res.json())
         .then(json => {
 
@@ -54,7 +54,7 @@ getTeachers()
 
 
     function deleteTeacher(id){
-          fetch('http://localhost:9090/teachers/'+id, {
+          fetch('http://localhost:8080/teachers/'+id, {
             method: 'delete'
           })
           .then(res=> getTeachers())

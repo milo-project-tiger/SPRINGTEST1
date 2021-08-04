@@ -1,0 +1,80 @@
+package model;
+
+import java.util.Date;
+import java.io.Serializable;
+import org.hibernate.*;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.Version;
+import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.Set;
+import java.util.HashSet;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+
+private Set<Order> orders = new HashSet<Order>();
+    private int id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    public int getId() {
+	return this.id;
+    }
+    
+    public void setId(int id) {
+	this.id = id;
+    }
+        
+    public String toString() {
+	/*return "Contact - Id: " + id + ", First name: " + trading_name
+	  + ", Last name: " + contact_name + ", Birthday: " + birthDate;*/
+	return ""; //this.trading_name;
+    }
+
+    
+    @OneToMany(mappedBy = "provider",
+	       orphanRemoval=true, fetch = FetchType.EAGER)
+	       @Cascade(CascadeType.ALL)
+	       //
+	       public Set<Product> getProducts(){
+	return this.products;
+    }
+    
+    public void setProducts(Set<Product> products) {
+	this.products = products;
+    }
+    public void addProduct(Product product) {
+	product.setProvider(this);
+	getProducts().add(product);
+    } 
+    
+      @OneToMany(mappedBy = "provider",
+		 orphanRemoval=true, fetch = FetchType.EAGER)
+      @Cascade( CascadeType.ALL)
+      public Set<Order> getOrders() {
+	  return this.orders;
+      }
+    
+    public void setOrders(Set<Order> ordersHash) {
+	this.orders = ordersHash;
+    }
+
+    public void addOrder(Order order) {
+	order.setProvider(this);
+	getOrders().add(order);
+    } 
+    
+    public void removeOrderFromHash(Order order) {
+	getOrders().remove(order);
+    }
+        
+    @Column(name = "TRADINGNAME")
+    public String getTradingName() {
+	return this.tradingName;
+    }

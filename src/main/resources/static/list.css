@@ -1,5 +1,12 @@
 body{
     background-color: lightblue;
-    
-    
+         
+}
+
+div#productList>div{
+  display: block;
+  padding:20; 
+  margin-bottom:3%;
+  border: 2px solid black;
+ 
 }

@@ -36,7 +36,6 @@ public class StudentService {
         return (Student) query.uniqueResult();
     }
 
-
     public List<Student> getAllStudents(){
         Query query = sessionFactory.getCurrentSession().createQuery("from Student");
         return query.list();
@@ -48,12 +47,10 @@ public class StudentService {
        return query.list();
     }
 
-
     public void deleteStudent(int id){
         Query query = sessionFactory.getCurrentSession().createQuery("from Student where id=:id");
         query.setInteger("id", id);
         Student student = (Student) query.uniqueResult();
         sessionFactory.getCurrentSession().delete(student);
     }
-
 }
