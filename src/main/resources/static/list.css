@@ -1,6 +1,36 @@
 body{
-    background-color: lightblue;
-         
+    background-color: pink;
+    background-image: linear-gradient(pink, orange);
+}
+
+div#product_form>span{  
+  display:inline-block;
+  padding:20;
+  margin-top: 1%;
+}
+
+div#product_form>span>input{
+  background-color:black;
+  color:aqua;
+  height:14%;
+  border-radius:20px;
+  padding:10px;
+}
+div#product_form>span>textarea{
+ font-size:larger;
+ width:170%;
+ margin:20;
+ height:30%;
+ background-color:black;
+  border-radius:20%;
+  padding-top:10;
+  color:aqua;
+}
+
+div#product_form{
+  border: 2px solid black;
+  margin:20
+  
 }
 
 div#productList>div{
@@ -8,5 +38,9 @@ div#productList>div{
   padding:20; 
   margin-bottom:3%;
   border: 2px solid black;
- 
+}
+
+div#productList>div>span{
+  display: block;
+  padding:2;
 }

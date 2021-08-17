@@ -1,55 +1,111 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css"  href="list.css" />
-    </head>
-  <h2>Add new Product</h2>
-  Name: <input type="text" id="name"/>
-  <button onclick="add()">Add</button>
+  </head>
+  <header><span>YING YANG SPIRIT: </span> <span>
+				      Herbs & Curios </span> </header>
   
+  <h2>Add new Product</h2>
+  <div id='product_form'>
+    <span> Name: <input type="text" id="name"/> </span>
+    <span> Price: <input type="text" id="price"/> </span>
+    <span> Description: <textarea id="desc"> </textarea> </span>  
+  </div>
+  <!--button onclick="desc()">Add</button-->
+  <button onclick="add()">Add</button>
+</div>
+<h2>Add new StockNote </h2> 
+<div id='product_form'>
+    <span> QTY: <input type="text" id="qty"/> </span>
+    <span> PID: <input type="text" id="PID"/> </span>
+  </div>
+ <button onclick="stockUpdate()">stock update</button>
+
+Name: <input type="text" id="name"/>
+<button onclick="add()">Add</button>
   <h2>List of Products</h2>
   <div id="productList"></div>
-  
   <script>
     getProducts();
-    
+    //description;
+    //private int sellingPrice;
+
     function add(){ //put
        var name = document.getElementById('name').value //get value from an html element
-       fetch('http://localhost:8080/addProduct/', {
+	var desc = document.getElementById('desc').value //get value from an html element 
+	var price = document.getElementById('price').value 
+	fetch('http://localhost:8080/addProduct/', {
             headers: {
              'Accept': 'application/json',
              'Content-Type': 'application/json'
              },
              method: "PUT",
-             body: JSON.stringify({name: name})
+            body: JSON.stringify({name: name,description: desc,sellingPrice: price})
 
      }).then(res => getProducts())
-
+	
         console.log('Added')
     }
+    
+    //commiting the Stock with qty...
+    function stockUpdate(){
+	/*
+	 @PutMapping("/placeStock/") 
+	 public void placeOrder(@RequestParam int product_id, @RequestParam int qty) {
+	*/
+	var qty = document.getElementById('qty').value //get value from an html element 
+	var PID = document.getElementById('PID').value 
+	fetch('http://localhost:8080/placeStock/?product_id='+PID+'&qty='+qty, {
+            headers: {
+             'Accept': 'application/json',
+             'Content-Type': 'application/json'
+             },
+             method: "PUT",
+            body: ""
 
+     }).then(res => getProducts())
+	
+        console.log('Stock Updated')
+        
+    }
+    
     function getProducts(){
-
-        var productList = document.getElementById('productList')
-
+        var productList = document.getElementById('productList');
         productList.innerHTML = ''
         fetch('http://localhost:8080/getAllProducts/')
         .then(res => res.json())
         .then(json => {
 
            for(i=0; i<json.length; i++){
-
-             var id = json[i].id
-		
+               var id = json[i].id;
+	       var desc = json[i].description;
                var deleteLink = `<button onclick='deleteProduct(${id})'>Delete</button>`
 	                                                      // 
-               productList.innerHTML += '<div>' + '<span>' + json[i].id + '<span>'
-		   +  '<span>' + json[i].name +  '<span>'   + deleteLink  + '</div>'
-
+               productList.innerHTML += '<div>' + '<span> PID:' + json[i].id + '</span>'
+		   +  '<span> Product Name:' + json[i].name +  '</span>' +  '<span> Description:'
+		   + json[i].description +  '</span>' +  '<span> Price: $' + json[i].sellingPrice + '</span>'
+		   + '<span id="stockqty"> In Stock:   </span>'
+		   + deleteLink  + '</div>'
            }
 
        })
 
     }
+    /*
+    function getStockNotes(){
+	var productList = document.getElementById('productList')
+        productList.innerHTML = ''
+        fetch('http://localhost:8080/getAllProducts/')
+        .then(res => res.json())
+        .then(json => {
+
+           for(i=0; i<json.length; i++){
+               var PID = json[i].PID;
+	       var qty = json[i].qty;
+               //save to an array...
+	   }
+	}
+	*/// match the product qty inner.html .. with stock note.. like a join.. and then add the qty.   
     
     function deleteProduct(id){
           fetch('http://localhost:8080/products/'+id, {

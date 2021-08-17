@@ -26,13 +26,14 @@ import java.util.List;
 
 public class Product implements Serializable {
    private int id;
+   public String pcode;
    private int version;
-   private String name;
+   public String name;
    private String model;
    private String description;
    private int sellingPrice;  //!
-   private Inventory inventory;
-   private int qty;
+   private StockNote stocknote;
+   //private int qty;
    //private Category category; //!
    //private Provider provider;  //!
 
@@ -54,17 +55,6 @@ public class Product implements Serializable {
    public void setId(int id) {
       this.id = id;
    }
-
-
-   @Column(name = "quantity")
-   public int getQTY() {
-      return this.qty;
-   }
-    
-   public void setQTY(int qty) {
-       this.qty = qty; 
-   }  
-     
     
    @Version
    @Column(name = "VERSION")
@@ -84,6 +74,15 @@ public class Product implements Serializable {
    public void setName(String name) {
       this.name = name;
    }
+
+   @Column(name = "code")
+   public String getPcode() {
+      return this.pcode;
+   }
+    
+   public void setPcode(String code) {
+      this.pcode = code;
+   } 
     
    @Column(name = "MODEL")
    public String getModel() {
@@ -94,15 +93,15 @@ public class Product implements Serializable {
       this.model = model;
    }
     
-   @ManyToOne(fetch = FetchType.EAGER)
-   @JsonIgnore
-   @JoinColumn(name = "INVENTORY_ID")
-   public Inventory getInventory() {
-      return this.inventory;
+   @OneToOne(fetch = FetchType.EAGER)
+   // @JsonIgnore
+   //@JoinColumn(name = "STOCKNOTE_ID")
+   public StockNote getStockNote() {
+      return this.stocknote;
    }
     
-   public void setInventory(Inventory inventory) {
-      this.inventory = inventory;
+   public void setStockNote(StockNote stocknote) {
+      this.stocknote = stocknote;
    }
     
    @Column(name = "DESCRIPTION")

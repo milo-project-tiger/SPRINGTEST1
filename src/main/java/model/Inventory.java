@@ -20,28 +20,28 @@ import javax.persistence.NamedQuery;
 @Table(name = "inventory")
 public class Inventory { 
 private Set<StockNote> stocknotes = new HashSet<StockNote>();
-    private int id;
+   private int id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    public int getId() {
-       return this.id;
-    }
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @Column(name = "ID")
+   public int getId() {
+      return this.id;
+   }
     
-    public void setId(int id) {
-	this.id = id;
-    }
+   public void setId(int id) {
+      this.id = id;
+   }
         
-    public String toString() {
-	/*return "Contact - Id: " + id + ", First name: " + trading_name
+   public String toString() {
+     /*return "Contact - Id: " + id + ", First name: " + trading_name
 	  + ", Last name: " + contact_name + ", Birthday: " + birthDate;*/
-	return ""; //this.trading_name;
-    }
+      return ""; //this.trading_name;
+   }
 
-    @OneToMany(mappedBy = "inventory",
-	       orphanRemoval=true, fetch = FetchType.EAGER)
-	       @Cascade(CascadeType.ALL)
+   @OneToMany(mappedBy = "inventory",
+	      orphanRemoval=true, fetch = FetchType.EAGER)
+      @Cascade(CascadeType.ALL)
 	       //
     public Set<StockNote> getStockNotes(){
        return this.stocknotes;

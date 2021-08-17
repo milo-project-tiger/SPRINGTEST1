@@ -19,18 +19,23 @@ import java.util.List;
 
 @Entity
 @Table(name = "StockNote")
-public class StockNote{
-     
-    // Product         one to one.
-    // Inventory       many to one.
-    private int PID;
-    private int qty;
-    //product id...
+public class StockNote{  
+   // Product   one to one.
+   private Product product;
+   // Inventory       many to one. 
+   private Inventory inventory;
+   private int qty;
+   //product id...
+   private int PID;
+   private String pcode;
     //qty...
+   private int id;
 
-    public StockNote(int PID, int qty) {
-      this.PID= PID;
-      this.qty  = qty;
+   public StockNote(){} 
+    
+   public StockNote(Product product, int qty) {
+       //  this.product = product;
+      this.qty = qty;
    }
     
    @Id
@@ -43,15 +48,15 @@ public class StockNote{
    public void setId(int id) {
       this.id = id;
    }
-
-   @Column(name = "PID")
-   public int getPID() {
-      return this.PID;
+       
+   @Column(name = "productPcode")
+   public String getPcode() {
+      return this.pcode;
    }
     
-   public void setPID(int PID) {
-      this.PID = PID;
-   }
+   public void setPcode(String code) {
+      this.pcode = code;
+   } 
 
     
    @Column(name = "Quantity")
@@ -59,9 +64,39 @@ public class StockNote{
       return this.qty;
    }
     
-   public void setQuantity(int QTY) {
+   public void setQTY(int QTY) {
       this.qty = QTY;
    }
 
-
+   @ManyToOne(fetch = FetchType.EAGER)
+   @JsonIgnore
+   @JoinColumn(name = "INVENTORY_ID")
+   public Inventory getInventory() {
+      return this.inventory;
+   }
+   
+   public void setInventory(Inventory inventory) {
+      this.inventory = inventory;
+   }
+     
+   @OneToOne(fetch = FetchType.EAGER)
+   // @JsonIgnore
+   @JoinColumn(name = "PRODUCT_ID")
+   public Product getProduct() {
+      return this.product;
+   }
+   
+   public void setProduct(Product product) {
+      this.product = product;
+   }
+    
+   public void setPID(int PID ){
+      this.PID = PID;
+   }
+    
+  @Column(name = "PID")
+  public int  getPID() {
+     return this.PID;
+  }
+    
 }

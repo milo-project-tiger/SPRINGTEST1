@@ -2,6 +2,7 @@ package controller;
 
 import java.io.Serializable;
 import model.Product;
+import model.StockNote;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import service.OrderSystemService;
@@ -19,30 +20,51 @@ public class OrderSystemController {
    @Autowired
    private OrderSystemService OrderSystemService;
 
-   @PostMapping("/register")
-   public void registerUser(@RequestParam(required = false) int id, @RequestParam String name) {
-	System.out.println("name == " + name);
-	System.out.println("id == " +id);   	
-   }
-    
+  
    @PutMapping("/addProduct/") 
    public void addProduct(@RequestBody Product product) {
       System.out.println("here");
       OrderSystemService.saveProduct(product);
    }     
     
+   @PutMapping("/getProductByPcode/{code}")
+   public Product getProductByPcode(@PathVariable String code){
+      Product product = OrderSystemService.getProductByPcode(code);
+      return product;
+   }
+    
+   @PutMapping("/placeStock/") 
+   public void placeOrder(@RequestParam String product_id, @RequestParam int qty) {
+      System.out.println("here");      
+	
+      //OrderSystemService.saveProduct(OrderSystemService);
+      Product product = OrderSystemService.getProductByPcode(product_id);
+      StockNote stocknote = new StockNote(product, qty);
+      product.setStockNote(stocknote);
+      stocknote.setPcode(product_id);
+      stocknote.setProduct(product);
+      OrderSystemService.saveProduct(product);
+      OrderSystemService.saveStockNote(stocknote);
+      //stocknote.setInventory 
+   } 
+    
    @RequestMapping(path = "getAllProducts/", method = RequestMethod.GET)
    public List<Product> getAllProducts(){    //@PathVariable("Id") int id){
       return OrderSystemService.getAllProducts();
    }
 
-   @RequestMapping(path = "products/{id}", method = RequestMethod.DELETE)
-   public void deleteProduct(@PathVariable int id){
-      OrderSystemService.deleteProduct(id);
+  @RequestMapping(path = "getAllStockNotes/", method = RequestMethod.GET)
+  public List<StockNote> getAllStockNotes(){
+      return OrderSystemService.getAllStockNotes();
+  }
+    
+   @RequestMapping(path = "deleteProduct/{id}", method = RequestMethod.DELETE)
+   public void deleteProduct(@PathVariable String id){
+       OrderSystemService.deleteProduct(id); 
+
    }
+
 }
-
-
 
 
 /*

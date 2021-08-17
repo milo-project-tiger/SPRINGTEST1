@@ -11,6 +11,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import model.Product;
+import model.StockNote;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-//import javax.annotation.Resource;
+//imp"ort javax.annotation.Resource;
 import java.util.List;
 
 @Transactional
@@ -38,32 +39,39 @@ public class OrderSystemService {
    }
     
    public void saveProduct(Product product){
-        sessionFactory.getCurrentSession().saveOrUpdate(product);
-    }
+      sessionFactory.getCurrentSession().saveOrUpdate(product);
+   }
+   
+   public void saveStockNote(StockNote stocknote){
+      sessionFactory.getCurrentSession().saveOrUpdate(stocknote);       
+   }
+ 
+   public Product getProductByPcode(String code){
+      //return (Person)sessionFactory.getCurrentSession().get(Person.class, id);
+      Query query = sessionFactory.getCurrentSession().createQuery("from Product where code = :code ");
+      query.setString("code", code);
+      
+      return (Product) query.uniqueResult();
+   }
     
-    public Product getProductById(int id){
-	//return (Person)sessionFactory.getCurrentSession().get(Person.class, id);
-	Query query = sessionFactory.getCurrentSession().createQuery("from Product where id = :id ");
- 	query.setInteger("id", id);
-	 
-	return (Product) query.uniqueResult();
-    }
-    
-    public List<Product> getAllProducts(){
-        Criteria criteria =
-	    sessionFactory.getCurrentSession().createCriteria(Product.class);
-	return criteria.list();
-    }
-    
-    public void deleteProduct(int id){
-        Query query = sessionFactory.getCurrentSession().createQuery("from Product where id=:id");
-        query.setInteger("id", id);
-        Product product = (Product) query.uniqueResult();
-        sessionFactory.getCurrentSession().delete(product);
-    }
+   public List<Product> getAllProducts(){
+      Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Product.class);
+      return criteria.list();
+   }
 
+    public List<StockNote> getAllStockNotes(){  
+      Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StockNote.class);
+      return criteria.list();
+   }
+
+   public void deleteProduct(String code){
+      Query query = sessionFactory.getCurrentSession().createQuery("from Product where code=:code");
+      query.setString("code", code);
+      Product product = (Product) query.uniqueResult();
+      sessionFactory.getCurrentSession().delete(product);
+   }
 }
-	
+
 	/*  SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(
                 "select * from  product_detail, where  p.provider_id");
 	        return query.list(); 
