@@ -70,6 +70,14 @@ public class OrderSystemService {
       Product product = (Product) query.uniqueResult();
       sessionFactory.getCurrentSession().delete(product);
    }
+
+   public void deleteStockNote(String pcode){
+      Query query = sessionFactory.getCurrentSession().createQuery("from StockNote where pcode=:pcode");
+      query.setString("pcode", pcode);
+      StockNote stocknote = (StockNote) query.uniqueResult();
+      sessionFactory.getCurrentSession().delete(stocknote);
+   }
+
 }
 
 	/*  SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(

@@ -33,7 +33,7 @@ public class StockNote{
 
    public StockNote(){} 
     
-   public StockNote(Product product, int qty) {
+    public StockNote(Product product,int qty) {
        //  this.product = product;
       this.qty = qty;
    }

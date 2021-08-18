@@ -29,7 +29,7 @@ private Set<StockNote> stocknotes = new HashSet<StockNote>();
       return this.id;
    }
     
-   public void setId(int id) {
+    public void setId(int id) {
       this.id = id;
    }
         
