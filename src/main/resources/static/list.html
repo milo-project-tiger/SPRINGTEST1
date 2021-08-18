@@ -1,4 +1,6 @@
 <html>
+  
+  <!-- SEPT M1. -->
   <head>
     <link rel="stylesheet" type="text/css"  href="list.css" />
   </head>
@@ -12,7 +14,7 @@
     <span> Pcode: <input type="text" id="code"/> </span>
     <span> Description: <textarea id="desc"> </textarea> </span>  
   </div>
-  <!--button onclick="desc()">Add</button-->
+  
   <button onclick="add()">Add</button>
 </div>
 <h2>Add new StockNote </h2> 
@@ -51,11 +53,7 @@ Name: <input type="text" id="name"/>
     
     //commiting the Stock with qty...
     function stockUpdate(){
-	/*
-	 @PutMapping("/placeStock/") 
-	 public void placeOrder(@RequestParam int product_id, @RequestParam int qty) {
-	*/
-	var qty = document.getElementById('qty').value //get value from an html element 
+	var qty = document.getElementById('qty').value 
 	var PID = document.getElementById('PID').value 
 	fetch('http://localhost:8080/placeStock/?product_id='+PID+'&qty='+qty, {
             headers: {
@@ -95,21 +93,6 @@ Name: <input type="text" id="name"/>
        })
 
     }
-    /*
-    function getStockNotes(){
-	var productList = document.getElementById('productList')
-        productList.innerHTML = ''
-        fetch('http://localhost:8080/getAllProducts/')
-        .then(res => res.json())
-        .then(json => {
-
-           for(i=0; i<json.length; i++){
-               var PID = json[i].PID;
-	       var qty = json[i].qty;
-               //save to an array...
-	   }
-	}
-*/
     
     function deleteProduct(id){
 	deleteStockNote(id);

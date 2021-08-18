@@ -17,6 +17,11 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import java.util.List;
 
+/*
+  N Lankshear. s3529801. SEPT M1.
+ */
+
+
 @Entity
 @Table(name = "SPIRIT_PRODUCT")
 /*@NamedQueries({
@@ -31,11 +36,10 @@ public class Product implements Serializable {
    public String name;
    private String model;
    private String description;
-   private int sellingPrice;  //!
+   private int sellingPrice;  
    private StockNote stocknote;
-   //private int qty;
-   //private Category category; //!
-   //private Provider provider;  //!
+   //private Category category; 
+   //private Provider provider; 
 
    public Product() {
    }
