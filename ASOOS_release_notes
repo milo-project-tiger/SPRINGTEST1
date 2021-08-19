@@ -1,0 +1,43 @@
+ASOOS 2021.0.1 Release Notes
+
+Released date: Aug 19, 2021
+
+These are the release notes for the first release of Alternative Spirit Online Order System (ASOOS). 
+
+The document is structured into the following sections:
+
+Features
+Installation
+Known Issues
+LICENSE
+
+FEATURES:
+
+This release of ASOOS features an Online Order Systems Administration panel. 
+
++ Users may enter products into inventory with a description and later edit stock levels.
++ The available products are displayed automatically when added.
++ The ASOOS uses JPA, Hibernate, and PostreSQL for backend.
++ Low coupled MVC design in Java Spring framework.
++ Views implemented in plain JavaScript.
++ ASOOS styled with CSS.
+
+Installation
+
+Requirements:
+
+Ensure that latest JDK is installed. 
+PostreSQL
+Maven
+
+Clone the source from git@165.227.167.95:~/git/SEPT/
+Create psql user and database. 
+Change the database credentials in ASOOS configuration file to your own. 
+mvn jetty:run in POM.xml directory.
+
+KNOWN ISSUES:
+
+Alerts are not currently displayed to coerce acceptable data.
+Delete function breaks if identical products are added.
+
+LICENCE GPL V3  (See COPYING file for details)
