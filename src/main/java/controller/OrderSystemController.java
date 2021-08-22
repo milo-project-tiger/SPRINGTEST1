@@ -46,7 +46,7 @@ public class OrderSystemController {
       product.setStockNote(stocknote);
       stocknote.setPcode(product_id);
       stocknote.setProduct(product);
-      Ordersystemservice.saveProduct(product);
+      OrderSystemService.saveProduct(product);
 
    } 
     

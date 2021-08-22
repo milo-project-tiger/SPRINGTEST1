@@ -1,6 +1,5 @@
 import config.AppConfig;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import service.StudentService;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
