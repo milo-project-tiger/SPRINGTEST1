@@ -1,28 +1,32 @@
-<html>  
+<html>
+  
   <!-- SEPT M1. -->
   <head>
     <link rel="stylesheet" type="text/css"  href="list.css" />
   </head>
   <header><span>YING YANG SPIRIT: </span> <span>
 				      Herbs & Curios </span> </header>
+
+  <div class="user_notice_bar"> <span>User: </span> <span id="cart_inc"> </span> </div>
   
-  <h2>Add new Product</h2>
+  <!--h2>Add new Product</h2>
   <div id='product_form'>
     <span> Name: <input type="text" id="name"/> </span>
     <span> Price: <input type="text" id="price"/> </span>
     <span> Pcode: <input type="text" id="code"/> </span>
     <span> Description: <textarea id="desc"> </textarea> </span>  
-  </div>
+  </div-->
   
-  <button onclick="add()">Add</button>
+  <!--button onclick="add()">Add</button>
 </div>
 <h2>Add new StockNote </h2> 
 <div id='product_form'>
     <span> QTY: <input type="text" id="qty"/> </span>
     <span> PCODE: <input type="text" id="PID"/> </span>
   </div>
- <button onclick="stockUpdate()">stock update</button>
-
+ <button onclick="stockUpdate()">stock update</button-->
+					       
+					       
   <h2>List of Products</h2>
   <div id="productList"></div>
   <script>
@@ -30,6 +34,33 @@
     //description;
     //private int sellingPrice;
 
+    function displayCartIncrement(){
+
+	var cart_inc = document.getElementById('cart_inc');
+        productList.innerHTML = 'cart'
+        fetch('http://localhost:8080/getAllProducts/')
+            .then(res => res.json())
+            .then(json => {
+	    
+            for(i=0; i<json.length; i++){
+               var id = json[i].pcode;
+	       var desc = json[i].description;
+	       var addLink = `<button onclick='addProduct(${id})'>add to Cart</button>`
+	       var deleteLink = `<button onclick='removeProduct(${id})'>Remove Product</button>`
+	       var stocknoteObj ="";
+	       if (json[i].stockNote!=null){ 
+		   stocknoteObj = JSON.stringify(json[i].stockNote['qty']);}
+		productList.innerHTML += '<div>' + '<span> Product code: ' + json[i].pcode + '</span>'
+		   +  '<span> Product Name:' + json[i].name +  '</span>' +  '<span> Description:'
+		   + json[i].description +  '</span>' +  '<span> Price: $' + json[i].sellingPrice + '</span>'
+		   + '<span id="stockqty"> In Stock:' +  stocknoteObj + '</span>'
+		   + addLink  + '</div>'
+           }
+	    
+	})
+
+    }
+    
     function add(){ //put
        var name = document.getElementById('name').value //get value from an html element
 	var desc = document.getElementById('desc').value //get value from an html element 
@@ -70,13 +101,14 @@
         var productList = document.getElementById('productList');
         productList.innerHTML = ''
         fetch('http://localhost:8080/getAllProducts/')
-        .then(res => res.json())
-        .then(json => {
-
-           for(i=0; i<json.length; i++){
+            .then(res => res.json())
+            .then(json => {
+	    
+            for(i=0; i<json.length; i++){
                var id = json[i].pcode;
 	       var desc = json[i].description;
-               var deleteLink = `<button onclick='deleteProduct(${id})'>Delete</button>`
+	       var addLink = `<button onclick='addProduct(${id})'>add to Cart</button>`
+	       var deleteLink = `<button onclick='removeProduct(${id})'>Remove Product</button>`
 	       var stocknoteObj ="";
 	       if (json[i].stockNote!=null){ 
 		   stocknoteObj = JSON.stringify(json[i].stockNote['qty']);}
@@ -84,14 +116,21 @@
 		   +  '<span> Product Name:' + json[i].name +  '</span>' +  '<span> Description:'
 		   + json[i].description +  '</span>' +  '<span> Price: $' + json[i].sellingPrice + '</span>'
 		   + '<span id="stockqty"> In Stock:' +  stocknoteObj + '</span>'
-		   + deleteLink  + '</div>'
+		   + addLink  + '</div>'
            }
-
-       })
-
+	    
+	})
+	
     }
     
-    function deleteProduct(id){
+    function addProduct(id){
+	fetch('http://localhost:8080/cart/addProduct/'+id, {
+            method: 'PUT'
+        })
+            .then(res=> getProducts())
+    }
+    
+    function removeProduct(id){
 	deleteStockNote(id);
 	
 	fetch('http://localhost:8080/deleteProduct/'+id, {
@@ -104,7 +143,6 @@
 	 fetch('http://localhost:8080/deleteStockNote/'+id, {
             method: 'delete'
           })
-      
     }
     </script>
 </html>
