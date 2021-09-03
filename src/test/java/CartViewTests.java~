@@ -1,0 +1,29 @@
+
+
+
+    @Ignore
+    public void getCartTest(){
+	
+	try{
+	    URL url = new URL(TestConfig.URL+"getAllProducts/");
+	    HttpURLConnection httpURLConnection = (HttpURLConnection)
+		url.openConnection();
+	    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+	    String line = "";
+	    StringBuilder stringBuilder = new StringBuilder();
+	    
+	    while((line = bufferedReader.readLine()) !=null){
+		stringBuilder.append(line);
+	    } 
+	    Gson gson = new Gson();
+	    String json = stringBuilder.toString();
+	    List<Product> products = gson.fromJson(json, new TypeToken<List<Product>>(){}.getType());
+	    
+	    Assert.assertEquals(products.size(), 5);
+	    
+	} catch (MalformedURLException e) {
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+    }   

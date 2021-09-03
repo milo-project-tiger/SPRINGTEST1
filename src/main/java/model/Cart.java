@@ -6,6 +6,7 @@ import org.hibernate.*;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Fetch;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
@@ -16,8 +17,10 @@ import javax.persistence.Table;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import java.util.List;
+import java.util.ArrayList;
+
 /*
-  N Lankshear. s3529801. SEPT M1.
+  N Lankshear. s3529801. SEPT M2.
  */
 
 @Entity
@@ -25,21 +28,35 @@ import java.util.List;
 public class Cart{  
     private String name;       //Load with default user...
     private Customer customer;  //fetch details when logged in.
-    private List<Product> products = new List<Product>;
+    private List<Product> products = new ArrayList<Product>();
+    private int ID;
+    private String cartID;
 
-
+    public Cart(){
+	
+    }
     public Cart(String name){
 	this.name = name;
+    }
+    
+    @Column(name = "CartID")
+    public String getCartID() {
+	return this.cartID;
+    }
+
+    public void setCartID(String cartID) {
+	this.cartID= cartID;
     } 
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     public int getId() {
-	return this.id;
+	return this.ID;
     }
 
-    public void setId(int id) {
-	this.id = id;
+    public void setId(int ID) {
+	this.ID = ID;
     }
 
     @Column(name = "customerName")
@@ -64,14 +81,17 @@ public class Cart{
     }
     
     //one cart has many products
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnore
-    @JoinColumn(name = "CART_ID")
-    public Products getProducts() {
-	return this.products;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    @JoinTable(name = "product_usercart",
+	       joinColumns = @JoinColumn(name = "CART_ID"),
+	       inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID"))
+	public List<Product> getProducts() {
+	   return this.products;
     }
+   
 
-    public void setProducts(Products products) {
+    public void setProducts(List<Product> products) {
 	this.products = products;
     }
        
@@ -79,6 +99,6 @@ public class Cart{
  	this.products.add(product);
     }
 
-   
+    //public boolean equals
 }
   

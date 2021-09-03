@@ -9,101 +9,81 @@
 
   <div class="user_notice_bar"> <span>User: </span> <span id="cart_inc"> </span> </div>
   
-  <!--h2>Add new Product</h2>
-  <div id='product_form'>
-    <span> Name: <input type="text" id="name"/> </span>
-    <span> Price: <input type="text" id="price"/> </span>
-    <span> Pcode: <input type="text" id="code"/> </span>
-    <span> Description: <textarea id="desc"> </textarea> </span>  
-  </div-->
-  
-  <!--button onclick="add()">Add</button>
-</div>
-<h2>Add new StockNote </h2> 
-<div id='product_form'>
-    <span> QTY: <input type="text" id="qty"/> </span>
-    <span> PCODE: <input type="text" id="PID"/> </span>
-  </div>
- <button onclick="stockUpdate()">stock update</button-->
 					       
 					       
   <h2>List of Products</h2>
   <div id="productList"></div>
+  <h2>My Mystical Magickal Cart</h2>
+  <div id="cartList"> </div>
   <script>
     getProducts();
+    getCart();
+    
     //description;
     //private int sellingPrice;
-
-    function displayCartIncrement(){
-
-	var cart_inc = document.getElementById('cart_inc');
-        productList.innerHTML = 'cart'
-        fetch('http://localhost:8080/getAllProducts/')
+    function getCart( ){
+    dummyCart = "cartID15292";
+	var cartList = document.getElementById('cartList');
+	var deleteLink = `<button>Remove Product</button>`
+	cartList.innerHTML = ''
+	fetch('http://localhost:8080/cart/getCart/'+ dummyCart)
             .then(res => res.json())
             .then(json => {
-	    
-            for(i=0; i<json.length; i++){
-               var id = json[i].pcode;
+		//alert(json.length)
+		for(i=0; i<json.length; i++){
+		    var products =""; 
+		    if (json[i].products!=null){
+			products = JSON.stringify(json[i].products[0])    
+			productsLen = JSON.stringify(json[i].products.length)
+			alert(products); 
+			cartList.innerHTML +="Number of Products in Cart: " + productsLen + "</br>"
+
+			for(i=0; i<productsLen; i++){
+			    
+			    product = JSON.stringify(json[0].products[i].description)    
+			    price = JSON.stringify(json[0].products[i].sellingPrice)    
+			    cartList.innerHTML +=   "<div>" +  product + " </div></br> "+
+				"<div>Price" +  price + " </div></br> "
+				+ deleteLink  
+			}
+		    }	   		      	       
+	      	   /*var addLink = `<button onclick='addProduct(${id})'>add to Cart</button>`
+		    
+		   */
+		}
+	    }).then(res=> getProducts())
+
+
+
+    }
+    function addProduct(pcode){ 
+	
+	var cartList = document.getElementById('cartList');
+        cartList.innerHTML = ''
+	fetch('http://localhost:8080/cart/addProductToCart/'+ pcode)
+            .then(res => res.json())
+            .then(json => {
+	//	alert(json.length)
+	       for(i=0; i<json.length; i++){
+	       /*var id = json[i].pcode;
 	       var desc = json[i].description;
 	       var addLink = `<button onclick='addProduct(${id})'>add to Cart</button>`
 	       var deleteLink = `<button onclick='removeProduct(${id})'>Remove Product</button>`
-	       var stocknoteObj ="";
-	       if (json[i].stockNote!=null){ 
-		   stocknoteObj = JSON.stringify(json[i].stockNote['qty']);}
-		productList.innerHTML += '<div>' + '<span> Product code: ' + json[i].pcode + '</span>'
-		   +  '<span> Product Name:' + json[i].name +  '</span>' +  '<span> Description:'
-		   + json[i].description +  '</span>' +  '<span> Price: $' + json[i].sellingPrice + '</span>'
-		   + '<span id="stockqty"> In Stock:' +  stocknoteObj + '</span>'
-		   + addLink  + '</div>'
-           }
-	    
-	})
-
+	       var stocknoteObj =""; */
+	      /* if (json[i].products!=null){ 
+		   products = JSON.stringify(json[i].products[0]);} */
+               cartList.innerHTML +="helloworld!"
+	       }
+	    }).then(res=> getCart())
     }
-    
-    function add(){ //put
-       var name = document.getElementById('name').value //get value from an html element
-	var desc = document.getElementById('desc').value //get value from an html element 
-	var price = document.getElementById('price').value
-	var pcode = document.getElementById('code').value 
-	fetch('http://localhost:8080/addProduct/', {
-            headers: {
-             'Accept': 'application/json',
-             'Content-Type': 'application/json'
-             },
-             method: "PUT",
-            body: JSON.stringify({name: name,description: desc,sellingPrice: price, pcode: pcode})
 
-     }).then(res => getProducts())
-	
-        console.log('Added')
-    }
-    
-    //commiting the Stock with qty...
-    function stockUpdate(){
-	var qty = document.getElementById('qty').value 
-	var PID = document.getElementById('PID').value 
-	fetch('http://localhost:8080/placeStock/?product_id='+PID+'&qty='+qty, {
-            headers: {
-             'Accept': 'application/json',
-             'Content-Type': 'application/json'
-             },
-             method: "PUT",
-            body: ""
-
-     }).then(res => getProducts())
-	
-        console.log('Stock Updated')
-        
-    }
-    
     function getProducts(){
         var productList = document.getElementById('productList');
         productList.innerHTML = ''
         fetch('http://localhost:8080/getAllProducts/')
             .then(res => res.json())
             .then(json => {
-	    
+	
             for(i=0; i<json.length; i++){
                var id = json[i].pcode;
 	       var desc = json[i].description;
@@ -122,14 +102,14 @@
 	})
 	
     }
-    
+    /*
     function addProduct(id){
 	fetch('http://localhost:8080/cart/addProduct/'+id, {
             method: 'PUT'
         })
             .then(res=> getProducts())
     }
-    
+    */
     function removeProduct(id){
 	deleteStockNote(id);
 	

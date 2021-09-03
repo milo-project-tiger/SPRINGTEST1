@@ -6,13 +6,12 @@ import model.StockNote;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import service.OrderSystemService;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 /**
  * 
-  N Lankshear. s3529801. SEPT M1.  T2 2021.
+  N Lankshear. s3529801. SEPT M2.  T2 2021.
  */
  
 @RestController
@@ -40,21 +39,14 @@ public class OrderSystemController {
       System.out.println("here");      
 	
       Product product = OrderSystemService.getProductByPcode(product_id);
-      // could this check become a method.. or could it be simplified by introducing equals() in Model class?
-      StockNote checkExistingNote =  OrderSystemService.getStockNoteByPCode(product_id );
-      if ( checkExistingNote !=null ){
-	  checkExistingNote.setQTY(qty);
-	  OrderSystemService.mergeStockNote(checkExistingNote);
-      }
-      else{
-	  StockNote stocknote = new StockNote(product, qty);
-	  stocknote.setPcode(product_id);
-	  OrderSystemService.saveStockNote(stocknote);
-	  product.setStockNote(stocknote);
-	  stocknote.setPcode(product_id);
-	  stocknote.setProduct(product);   
-	  OrderSystemService.saveProduct(product);
-      }
+      StockNote stocknote = new StockNote(product, qty);
+      stocknote.setPcode(product_id);
+      OrderSystemService.saveStockNote(stocknote);
+      product.setStockNote(stocknote);
+      stocknote.setPcode(product_id);
+      stocknote.setProduct(product);
+      OrderSystemService.saveProduct(product);
+
    } 
     
    @RequestMapping(path = "getAllProducts/", method = RequestMethod.GET)

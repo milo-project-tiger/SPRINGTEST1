@@ -92,12 +92,12 @@
     }
     
     function deleteProduct(id){
-	deleteStockNote(id);
 	
 	fetch('http://localhost:8080/deleteProduct/'+id, {
             method: 'delete'
           })
-          .then(res=> getProducts())
+            .then(res=> getProducts())
+	deleteStockNote(id);
     }
 
     function deleteStockNote(id){

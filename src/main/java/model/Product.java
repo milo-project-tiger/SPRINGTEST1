@@ -38,7 +38,8 @@ public class Product implements Serializable {
    private String description;
    private int sellingPrice;  
    private StockNote stocknote;
-   //private Category category; 
+   private List<Cart> carts;
+    //private Category category; 
    //private Provider provider; 
 
    public Product() {
@@ -98,7 +99,7 @@ public class Product implements Serializable {
    }
     
    @OneToOne(fetch = FetchType.EAGER)
-   // @JsonIgnore
+   // 
    //@JoinColumn(name = "STOCKNOTE_ID")
    public StockNote getStockNote() {
       return this.stocknote;
@@ -125,5 +126,28 @@ public class Product implements Serializable {
     
    public void setSellingPrice(int sellingPrice) {
       this.sellingPrice = sellingPrice;
-   }    
+   }
+
+   /*
+   @ManyToOne()
+   // 
+   @JoinColumn(name = "CART_ID")
+   public Cart getCart() {
+      return this.cart;
+   }
+    */ 
+    
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @Fetch(value = FetchMode.SUBSELECT)
+    @JoinTable(name = "product_usercart", 
+	 joinColumns = @JoinColumn(name = "PRODUCT_ID"),
+	 inverseJoinColumns = @JoinColumn(name = "CART_ID"))
+         public List<Cart> getCarts() {
+       return this.carts;
+    }
+    
+   public void setCarts(List<Cart> carts) {
+      this.carts = carts;
+   }
 }

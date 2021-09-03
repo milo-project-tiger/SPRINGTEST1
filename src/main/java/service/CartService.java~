@@ -46,14 +46,10 @@ public class OrderSystemService {
 	sessionFactory.getCurrentSession().saveOrUpdate(product);
     }
    
-    public void saveStockNote(StockNote stocknote){
-	sessionFactory.getCurrentSession().saveOrUpdate(stocknote);       
+    public void saveCart(Cart cart){
+	sessionFactory.getCurrentSession().saveOrUpdate(cart);       
     }
-    public void mergeStockNote(StockNote stocknote){
-	sessionFactory.getCurrentSession().merge(stocknote);       
-    }
-
-    
+ 
     public Product getProductByPcode(String code){
 
 	Query query = sessionFactory.getCurrentSession().createQuery("from Product where code = :code ");
@@ -71,13 +67,7 @@ public class OrderSystemService {
 	Criteria criteria = sessionFactory.getCurrentSession().createCriteria(StockNote.class);
 	return criteria.list();
     }
-    public StockNote getStockNoteByPCode(String pcode ){
-	Query query = sessionFactory.getCurrentSession().createQuery("from StockNote where pcode=:pcode");
-	query.setString("pcode", pcode);
-	StockNote stocknote = (StockNote) query.uniqueResult();
-	return stocknote;
-    }
-    
+
     public void deleteProduct(String code){
 	Query query = sessionFactory.getCurrentSession().createQuery("from Product where code=:code");
 	query.setString("code", code);

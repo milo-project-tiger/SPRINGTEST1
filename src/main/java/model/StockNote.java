@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import java.util.List;
+
 /*
   N Lankshear. s3529801. SEPT M1.
  */
@@ -30,7 +31,8 @@ public class StockNote{
     //product code
     private String pcode;
     private int id;
-
+   
+    
     public StockNote(){} 
 
     public StockNote(Product product,int qty) {
@@ -68,6 +70,10 @@ public class StockNote{
 	this.qty = QTY;
     }
 
+    public void reduceQTYByOne(){
+	setQTY(this.qty -1);
+    }
+    
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinColumn(name = "INVENTORY_ID")
