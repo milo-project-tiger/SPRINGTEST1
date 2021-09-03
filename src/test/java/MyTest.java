@@ -19,8 +19,8 @@ public class MyTest {
     
     @Test
     public void test1() {
+	Assert.assertEquals(1,1);
 
-	assertEquals(1,1);
     }
 	
 }
