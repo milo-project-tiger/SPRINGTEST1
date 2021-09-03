@@ -22,7 +22,12 @@ public class OrderSystemController {
    @Autowired
    private OrderSystemService OrderSystemService;
 
-  
+    @RequestMapping("/")
+   public String index(){
+	return "hello world";
+   }
+   
+    
    @PutMapping("/addProduct/") 
    public void addProduct(@RequestBody Product product) {
       System.out.println("here");
