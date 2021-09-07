@@ -20,7 +20,7 @@ import java.util.Set;
 public class OrderSystemController {
     
    @Autowired
-   private OrderSystemService OrderSystemService;
+   private OrderSystemService orderSystemService;
 
     @RequestMapping("/")
    public String index(){
@@ -31,12 +31,12 @@ public class OrderSystemController {
    @PutMapping("/addProduct/") 
    public void addProduct(@RequestBody Product product) {
       System.out.println("here");
-      OrderSystemService.saveProduct(product);
+      orderSystemService.saveProduct(product);
    }     
     
    @PutMapping("/getProductByPcode/{code}")
    public Product getProductByPcode(@PathVariable String code){
-      Product product = OrderSystemService.getProductByPcode(code);
+      Product product = orderSystemService.getProductByPcode(code);
       return product;
    }
     
@@ -44,42 +44,42 @@ public class OrderSystemController {
    public void placeOrder(@RequestParam String product_id, @RequestParam int qty) {
       System.out.println("here");      
 	
-      Product product = OrderSystemService.getProductByPcode(product_id);
+      Product product = orderSystemService.getProductByPcode(product_id);
       // could this check become a method.. or could it be simplified by introducing equals() in Model class?
-      StockNote checkExistingNote =  OrderSystemService.getStockNoteByPCode(product_id );
+      StockNote checkExistingNote =  orderSystemService.getStockNoteByPCode(product_id );
       if ( checkExistingNote !=null ){
 	  checkExistingNote.setQTY(qty);
-	  OrderSystemService.mergeStockNote(checkExistingNote);
+	  orderSystemService.mergeStockNote(checkExistingNote);
       }
       else{
 	  StockNote stocknote = new StockNote(product, qty);
 	  stocknote.setPcode(product_id);
-	  OrderSystemService.saveStockNote(stocknote);
+	  orderSystemService.saveStockNote(stocknote);
 	  product.setStockNote(stocknote);
 	  stocknote.setPcode(product_id);
 	  stocknote.setProduct(product);   
-	  OrderSystemService.saveProduct(product);
+	  orderSystemService.saveProduct(product);
       }
    } 
     
-   @RequestMapping(path = "getAllProducts/", method = RequestMethod.GET)
-   public List<Product> getAllProducts(){  
-      return OrderSystemService.getAllProducts();
-   }
-
-  @RequestMapping(path = "getAllStockNotes/", method = RequestMethod.GET)
-  public List<StockNote> getAllStockNotes(){
-      return OrderSystemService.getAllStockNotes();
-  }
+    @RequestMapping(path = "getAllProducts/", method = RequestMethod.GET)
+    public List<Product> getAllProducts(){  
+	return orderSystemService.getAllProducts();
+    }
     
-   @RequestMapping(path = "deleteProduct/{id}", method = RequestMethod.DELETE)
-   public void deleteProduct(@PathVariable String id){
-       OrderSystemService.deleteProduct(id); 
-   }
-
-   @RequestMapping(path = "deleteStockNote/{id}", method = RequestMethod.DELETE)
-   public void deleteStockNote(@PathVariable String id){
-       OrderSystemService.deleteStockNote(id); 
-   }
+    @RequestMapping(path = "getAllStockNotes/", method = RequestMethod.GET)
+    public List<StockNote> getAllStockNotes(){
+	return orderSystemService.getAllStockNotes();
+    }
+    
+    @RequestMapping(path = "deleteProduct/{id}", method = RequestMethod.DELETE)
+    public void deleteProduct(@PathVariable String id){
+	orderSystemService.deleteProduct(id); 
+    }
+    
+    @RequestMapping(path = "deleteStockNote/{id}", method = RequestMethod.DELETE)
+    public void deleteStockNote(@PathVariable String id){
+	orderSystemService.deleteStockNote(id); 
+    }
 }
 
