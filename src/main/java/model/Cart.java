@@ -31,7 +31,7 @@ public class Cart{
     private List<Product> products = new ArrayList<Product>();
     private int ID;
     private String cartID;
-
+    
     public Cart(){
 	
     }

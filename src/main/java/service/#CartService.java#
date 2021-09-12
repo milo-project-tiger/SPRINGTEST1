@@ -76,7 +76,7 @@ public class CartService {
 	List<Product> products = query.list();
 	return products;
     }
-
+    
     public Cart getCartByCartID(String cartID){
 	Query query = sessionFactory.getCurrentSession().createQuery("from Cart where cartID=:cartID ");
 	query.setString("cartID", cartID);

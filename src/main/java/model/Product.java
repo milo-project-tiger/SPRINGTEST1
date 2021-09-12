@@ -45,9 +45,9 @@ public class Product implements Serializable {
    public Product() {
    }
     
-   public Product(String name, String model) {
+   public Product(String name) {
       this.name = name;
-      this.model = model;
+      //  this.model = model;
    }
     
    @Id

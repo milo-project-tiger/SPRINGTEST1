@@ -25,61 +25,68 @@ import java.util.Random;
 public class CartController {
     
    @Autowired
-   private OrderSystemService OrderSystemService;
+   private OrderSystemService orderSystemService;
     
-   @Autowired CartService CartService;
-
+   @Autowired
+   private CartService cartService;
+    
+   public CartController(OrderSystemService orderSystemService, CartService cartService){
+       this.orderSystemService = orderSystemService;
+       this.cartService = cartService;
+   }
+    
    @PutMapping("/createCustomer/") 
    public void addCustomer(@RequestBody Customer customer) {
-       CartService.saveCustomer(customer);
+       cartService.saveCustomer(customer);
    } 
        
    @RequestMapping(path = "createCart/", method = RequestMethod.GET) 
-   public Cart createCart() {
-       String cartID = "cartID";
-       Cart cart = new Cart();
-       Random r = new Random();
-       //  Cart cart = new Cart();
+   public List<Cart> createCart() {
        
-       int cartIDint = r.nextInt(20000);
-       if (cartIDint < 0 ){
-	   cartIDint = cartIDint * -1;}
-       cartID += Integer.toString(cartIDint); 
-       cart.setCartID(cartID);
-       CartService.saveCart(cart);
-       
-       return CartService.getCartByCartID(cartID);
+       Cart cart = cartService.saveCart();       
+       List<Cart> listCart = new ArrayList<Cart>();
+       listCart.add(cart);
+
+	return listCart;
    }
 
     @RequestMapping(path = "/getCart/{cartID}", method = RequestMethod.GET) 
     public List<Cart> getCart(@PathVariable String cartID) {
-	 Cart cart = CartService.getCartByCartID(cartID);
+	 Cart cart = cartService.getCartByCartID(cartID);
 	 List<Cart> listCart = new ArrayList<Cart>();
 	 listCart.add(cart);
 	 return listCart;
     }
     
-    @RequestMapping(path = "/addProductToCart/{pcode}", method = RequestMethod.GET) 
-    public Cart addProductToCart(@PathVariable String pcode) {
+    @RequestMapping(path = "/getAllCartProducts/{cartID}", method = RequestMethod.GET)
+    public List<Product> getAllCartProducts(@PathVariable String cartID){  
+	return cartService.getAllCartProducts(cartID);
+    }
+
+    
+    @RequestMapping(path = "/addProductToCart/{pcode}", method = RequestMethod.PUT) 
+    public Cart addProductToCart(@PathVariable String pcode, @RequestParam String cartID) {
        // @RequestParam int qty    
-	//Product product = OrderSystemService.getProductByPcode(product_id);
+	//Product product = orderSystemService.getProductByPcode(product_id);
 
 	//a cart to add products to.
-	String dummyCart = "cartID15292";
-	Cart dummy = CartService.getCartByCartID(dummyCart);
+	//String dummyCart = "cartID15292";
 	
-	StockNote stocknote =  OrderSystemService.getStockNoteByPCode(pcode);
+	Cart dummy = cartService.getCartByCartID(cartID);
+	dummy.setName("milkcrate");
+	StockNote stocknote =  orderSystemService.getStockNoteByPCode(pcode);
 	if (stocknote != null) {   //& stocknote qty > 0
-	    Product product = OrderSystemService.getProductByPcode(pcode);
+	    Product product = orderSystemService.getProductByPcode(pcode);
 	    //List<Product> products
-	    dummy.getProducts().add(product);
+	    //dummy.setProducts() 
+	    dummy.addProduct(product);
 	    
-	    CartService.mergeCart(dummy);
+	    cartService.mergeCart(dummy);
 	    stocknote.reduceQTYByOne();
-	    OrderSystemService.saveStockNote(stocknote);
+	    orderSystemService.saveStockNote(stocknote);
 	    
 	    //product.getCarts().add(dummy);
-	    //OrderSystemService.save(product);
+	    //orderSystemService.save(product);
 	}
 	
 	return dummy;
@@ -108,11 +115,7 @@ public class CartController {
 
    } 
     
-   @RequestMapping(path = "getAllProducts/", method = RequestMethod.GET)
-   public List<Product> getAllProducts(){  
-      return OrderSystemService.getAllProducts();
-   }
-
+  
   @RequestMapping(path = "getAllStockNotes/", method = RequestMethod.GET)
   public List<StockNote> getAllStockNotes(){
       return OrderSystemService.getAllStockNotes();

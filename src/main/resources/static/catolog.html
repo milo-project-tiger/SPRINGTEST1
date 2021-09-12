@@ -14,15 +14,40 @@
   <h2>List of Products</h2>
   <div id="productList"></div>
   <h2>My Mystical Magickal Cart</h2>
+  <div id="cartID">    </div>
   <div id="cartList"> </div>
+ 
+  
   <script>
+    makeCart();
     getProducts();
     getCart();
-    
-    //description;
+
+
+
+
+    function makeCart(){
+	var cartIDele = document.getElementById('cartID');
+	
+	cartID.innerHTML = ''
+	fetch('http://localhost:8080/cart/createCart/')
+            .then(res => res.json())
+            .then(json => {
+		//alert(json.length)
+		var cartID ='';
+		for(i=0; i<json.length; i++){
+		    cartID = json[i].cartID;
+		    alert(cartID);
+		    cartIDele.innerHTML += cartID;
+		}
+	    })
+    }
+	//description;
     //private int sellingPrice;
     function getCart( ){
-    dummyCart = "cartID15292";
+	//getCartID.
+	
+	var dummyCart = document.getElementById('cartID').innerHTML;
 	var cartList = document.getElementById('cartList');
 	var deleteLink = `<button>Remove Product</button>`
 	cartList.innerHTML = ''
@@ -57,26 +82,22 @@
 
     }
     function addProduct(pcode){ 
-	
+
+	var cartID = document.getElementById('cartID').innerHTML;
 	var cartList = document.getElementById('cartList');
         cartList.innerHTML = ''
-	fetch('http://localhost:8080/cart/addProductToCart/'+ pcode)
-            .then(res => res.json())
-            .then(json => {
-	//	alert(json.length)
-	       for(i=0; i<json.length; i++){
-	       /*var id = json[i].pcode;
-	       var desc = json[i].description;
-	       var addLink = `<button onclick='addProduct(${id})'>add to Cart</button>`
-	       var deleteLink = `<button onclick='removeProduct(${id})'>Remove Product</button>`
-	       var stocknoteObj =""; */
-	      /* if (json[i].products!=null){ 
-		   products = JSON.stringify(json[i].products[0]);} */
-               cartList.innerHTML +="helloworld!"
-	       }
-	    }).then(res=> getCart())
+	fetch('http://localhost:8080/cart/addProductToCart/'+ pcode + '/?cartID='+cartID, {
+            headers: {
+		'Accept': 'application/json',
+		'Content-Type': 'application/json'
+            },
+            method: "PUT",
+            body: ""
+	    
+	}).then(res => getProducts()).then(res=> getCart())
+	
     }
-
+    
     function getProducts(){
         var productList = document.getElementById('productList');
         productList.innerHTML = ''
@@ -102,6 +123,23 @@
 	})
 	
     }
+/*
+     function stockUpdate(){
+	var qty = document.getElementById('qty').value 
+	var PID = document.getElementById('PID').value 
+	fetch('http://localhost:8080/placeStock/?product_id='+PID+'&qty='+qty, {
+            headers: {
+             'Accept': 'application/json',
+             'Content-Type': 'application/json'
+             },
+             method: "PUT",
+            body: ""
+
+     }).then(res => getProducts())
+	
+        console.log('Stock Updated')
+        
+  */  
     /*
     function addProduct(id){
 	fetch('http://localhost:8080/cart/addProduct/'+id, {

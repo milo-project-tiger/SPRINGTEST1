@@ -22,9 +22,13 @@ public class OrderSystemController {
    @Autowired
    private OrderSystemService orderSystemService;
 
-    @RequestMapping("/")
+    public OrderSystemController(OrderSystemService OSS){
+	this.orderSystemService = OSS;
+    }
+    
+   @RequestMapping("/hello")
    public String index(){
-	return "hello world";
+	return "hello";
    }
    
     
