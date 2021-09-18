@@ -1,8 +1,146 @@
+section{
+  column-count: 4;
+  border:solid black;
+  padding:20; 
+}
+
+section>span{  
+  display:;
+}
+
+section>span:nth-of-type(2)>input{
+  background-color:darkred;
+  width:100%;
+  margin-left:-15;  
+  color:gold; 
+}
+
+section>span>input{
+ display:block;
+ font-size:larger;
+ width:40%;
+ margin:5;
+ height:;
+ background-color:black;
+ border-radius:20%;
+ padding-top:10;
+ color:aqua; 
+}
+
+section>span>textarea{
+  
+ font-size:larger;
+ width:100%;
+ margin-right:500;
+ height:30%;
+ background-color:black;
+ border-radius:20%;
+ padding-top:10;
+ color:aqua;
+  
+}
+
+header{ 
+  font-size:;
+  font-weight: bolder;  
+  background-image: url("http://localhost:8080/static/header_theme_2.png");
+  height: 40%;
+  padding:50;
+  
+}
+
+header>span{
+  text-align: right;
+  margin-top:-10;
+  display:block;
+  color:red;
+  background-color: #9999;
+  width:60%;
+  border-radius:60%;
+  box-shadow: 4px 4px 30px blue;
+}
+
+header>span:nth-of-type(even){
+  text-decoration-line: underline;
+  text-align:center;
+  margin-left:20%;
+  text-decoration-color: black;
+  font-size: 2%;
+  text-decoration-thickness: 1%;
+  background-color:black;
+  color:whitesmoke;
+  font-size:smaller;
+  font-style: italic;
+  text-shadow:2px 2px 4px black;
+}
+
+header>span:nth-of-type(odd){
+ text-decoration-line:;
+ text-decoration-color: whitesmoke ; 
+ margin-top:0%;
+ margin-bottom: 40;
+ background-color:#9999;
+ color:black;
+ font-size: 70;
+ letter-spacing: 55;
+ line-height:1 ;
+ width:90%;
+ text-shadow:2px 2px 4px whitesmoke;
+}
+
 body{
     background-color: pink;
     background-image: linear-gradient(pink, orange);
 }
 
+div#cartList>span:nth-last-of-type(even){
+  background-color:blue;
+  border:2px solid white;
+  width:30%;
+  height:30;
+  padding:20;
+  border-radius:20px;
+}
+div#cartList>span:nth-last-of-type(odd){
+  display:block;
+  background-color:greenyellow;
+  border:2px solid white;
+  width:30%;
+  height:30;
+  padding:20;
+  border-radius:20px;
+  margin-left:50%;
+}
+
+div#cartList>span:nth-last-of-type(even){
+  background-color:blue;
+    border:2px solid white;
+  width:30%;
+  padding:20;
+  border-radius:90%;
+    margin-left:50%;
+  border-bottom:none;
+}
+div#cartList>div:nth-last-of-type(odd){
+  display:block;
+  background-color: pink;
+  border:2px solid black;
+  width:80%;
+  height:30;
+  padding:40;
+  border-radius:20px;
+  
+}
+div#cartList>div:nth-last-of-type(even){
+  display:block;
+  background-color: aliceblue;
+  border:2px solid black;
+  width:80%;
+  height:30;
+  padding:40;
+  border-radius:20px;
+  
+}
 div#product_form>span{  
   display:inline-block;
   padding:20;

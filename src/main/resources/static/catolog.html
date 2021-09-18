@@ -4,7 +4,7 @@
   <head>
     <link rel="stylesheet" type="text/css"  href="list.css" />
   </head>
-  <header><span>YING YANG SPIRIT: </span> <span>
+  <header><span>YING YANG SPIRIT </span> <span>
 				      Herbs & Curios </span> </header>
 
   <div class="user_notice_bar"> <span>User: </span> <span id="cart_inc"> </span> </div>
@@ -14,35 +14,48 @@
   <h2>List of Products</h2>
   <div id="productList"></div>
   <h2>My Mystical Magickal Cart</h2>
-  <div id="cartID">    </div>
+  <div id="cartID"></div>
   <div id="cartList"> </div>
- 
+  <div id="create"> <button   onclick='order()'`> Confirm Order</button></div>
   
   <script>
+
+    //if (getSession == null){
     makeCart();
+   // }
     getProducts();
     getCart();
 
-
-
-
+    //create a new cart for anon user.
     function makeCart(){
-	var cartIDele = document.getElementById('cartID');
-	
-	cartID.innerHTML = ''
+	var cartNode = document.getElementById('cartID');
+	cartNode.innerHTML = ''
 	fetch('http://localhost:8080/cart/createCart/')
             .then(res => res.json())
-            .then(json => {
+	    .then(json => {
 		//alert(json.length)
-		var cartID ='';
+		//var cartID ='';
 		for(i=0; i<json.length; i++){
 		    cartID = json[i].cartID;
 		    alert(cartID);
-		    cartIDele.innerHTML += cartID;
+		    cartNode.innerHTML += cartID;
 		}
 	    })
-    }
-	//description;
+     }
+	// append the cart to session. Redirect to order.
+     function order(){
+	    var cartID = document.getElementById('cartID').innerHTML;
+	    alert(cartID)
+	    fetch('http://localhost:8080/cart/setCartSession/'+cartID)
+	   //  .then(res => res.json())
+	 alert("order commenced")
+	 window.location = "http://localhost:8080/static/createcustomerorder.html"
+	 
+                      
+        }
+		      
+    
+
     //private int sellingPrice;
     function getCart( ){
 	//getCartID.
@@ -60,16 +73,21 @@
 		    if (json[i].products!=null){
 			products = JSON.stringify(json[i].products[0])    
 			productsLen = JSON.stringify(json[i].products.length)
-			alert(products); 
-			cartList.innerHTML +="Number of Products in Cart: " + productsLen + "</br>"
-
+			//alert(products); 
+			cartList.innerHTML +="<span>Number of Products in Cart: " + productsLen + "</br></span>"
+			cartList.innerHTML +="<span>Value of Cart: $ " + json[i].cartValue +"</br></span>"
+			
 			for(i=0; i<productsLen; i++){
 			    
 			    product = JSON.stringify(json[0].products[i].description)    
 			    price = JSON.stringify(json[0].products[i].sellingPrice)    
-			    cartList.innerHTML +=   "<div>" +  product + " </div></br> "+
-				"<div>Price" +  price + " </div></br> "
-				+ deleteLink  
+			    name = JSON.stringify(json[0].products[i].name)    
+			    cartList.innerHTML +=   "<div>"+
+                                   "<span>Product Name: " + name + " </span></br> "+
+                                "<span> Description: " +  product + "</span></br> "+
+				"<span>Price: $" +  price + " </span></br> " 
+			    
+				+ deleteLink  + " </div>"
 			}
 		    }	   		      	       
 	      	   /*var addLink = `<button onclick='addProduct(${id})'>add to Cart</button>`

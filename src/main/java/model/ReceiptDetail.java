@@ -33,7 +33,7 @@ public class ReceiptDetail {
 
     @Column
     private double price;
-
+    
     public int getId() {
         return id;
     }

@@ -31,14 +31,25 @@ public class Cart{
     private List<Product> products = new ArrayList<Product>();
     private int ID;
     private String cartID;
+    private int cartValue = 0;
     
     public Cart(){
 	
     }
+
     public Cart(String name){
 	this.name = name;
     }
     
+    @Column(name = "cartValue")
+    public int getCartValue() {
+	return this.cartValue;
+    }
+
+    public void setCartValue(int cartValue) {
+	this.cartValue= cartValue;
+    
+    }
     @Column(name = "CartID")
     public String getCartID() {
 	return this.cartID;
@@ -90,7 +101,6 @@ public class Cart{
 	   return this.products;
     }
    
-
     public void setProducts(List<Product> products) {
 	this.products = products;
     }

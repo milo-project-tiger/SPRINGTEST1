@@ -23,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 //import javax.annotation.Resource;
 import java.util.List;
 import java.util.Random;
+import javax.servlet.http.*; 
+
+
 /*
   N Lankshear. s3529801. SEPT M2.
  */
@@ -34,10 +37,17 @@ public class CartService {
     @Autowired
     private SessionFactory sessionFactory;
     
-    public void setSessionFactory(SessionFactory sessionFactory) {
-	this.sessionFactory = sessionFactory;
-    }
+    
+    @Autowired 
+    private HttpSession httpSession;
 
+    
+    public void setSessionFactory(SessionFactory sessionFactory) {
+       this.sessionFactory = sessionFactory;
+    }  
+
+
+    
     //generic
     public void save(Object object){
 	sessionFactory.getCurrentSession().save(object);
@@ -65,6 +75,28 @@ public class CartService {
     public void mergeCart(Cart cart){
 	sessionFactory.getCurrentSession().merge(cart);
     }
+    
+    public String setCartInSession(Cart cart){
+       httpSession.setAttribute("cartSESSION", cart);
+       httpSession.setAttribute("name","milk");
+       return httpSession.getId();
+    }
+
+    public Cart getCartInSession(){
+	Cart cart = (Cart) httpSession.getAttribute("cartSESSION");
+	//return httpSession.getAttribute("name");
+	return cart;
+	//return httpSession.getId();
+    }
+    
+    public void removeFromCart(long productId) {
+       //Cart cart = getShoppingCartInSession();
+       //shoppingCart.removeItemFromCart(productId);
+       //updateCartInSession(shoppingCart);
+    }
+
+    
+    
     public void saveCustomer(Customer customer){
 	
 	sessionFactory.getCurrentSession().saveOrUpdate(customer);
@@ -76,7 +108,7 @@ public class CartService {
 	List<Product> products = query.list();
 	return products;
     }
-
+    
     public Cart getCartByCartID(String cartID){
 	Query query = sessionFactory.getCurrentSession().createQuery("from Cart where cartID=:cartID ");
 	query.setString("cartID", cartID);

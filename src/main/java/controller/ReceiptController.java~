@@ -1,0 +1,110 @@
+package controller;
+
+import service.CartService;
+import java.io.Serializable;
+import model.Product;
+import model.StockNote;
+import model.Cart;
+import model.Customer;
+import model.Receipt;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import service.OrderSystemService;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.Random;
+import javax.servlet.http.*; 
+
+/**
+ * 
+  N Lankshear. s3529801. SEPT M2.  T2 2021.
+ */
+ 
+@RestController
+@RequestMapping(path = "/receipt")
+public class ReceiptController {
+    
+   @Autowired
+   private CartService cartService;
+    
+   @Autowired
+   private ReceiptService receiptService;
+    
+   public ReceiptController(CartService cartService, ReceiptService receiptService){
+       this.cartService = cartService;
+       this.receiptService = receiptService;
+   }
+    
+   @PutMapping("/createReceipt/{cartID}") 
+   public void addReceipt(@RequestParam String passPhrase, @RequestParam String customerName) {
+
+       Receipt receipt = new Receipt();
+       
+       receipt.setPassPhrase( passPhrase );
+       receipt.setcustomerName( customerName );
+       // D.O.B
+       // add address // add payment.
+       receiptService.saveReceipt(receipt);
+   }
+    
+   @RequestMapping(path = "getReceipt/{passPhrase}", method = RequestMethod.GET)
+   public List<Cart> getReceipt(@PathVariable String passPhrase){
+       
+   }
+    
+   //Javascript traversal problem again.
+   @RequestMapping(path = "getSessionCart/", method = RequestMethod.GET)
+   public List<Cart> getSessionCart(){
+	
+      Cart cartSESSION = (Cart) cartService.getCartInSession();
+      List<Cart> listCart = new ArrayList<Cart>();
+      listCart.add(cartSESSION);
+      return listCart;
+   }
+    
+   
+   @RequestMapping(path = "/setCartSession/{cartID}", method = RequestMethod.GET)
+   public List<Cart> setSessionCart(@PathVariable String cartID){  
+       //may require String Sanitization
+       
+       //get cart by ID
+       Cart cart = cartService.getCartByCartID(cartID);
+       //add the cart to session.
+
+       cartService.setCartInSession(cart);
+       Cart cartSession = cartService.getCartInSession();
+       List<Cart> listCart = new ArrayList<Cart>();
+       listCart.add(cartSession);
+       return listCart; //return the cart from session variable.
+   }
+	
+   @PutMapping("/createCustomer/") 
+   public void addCustomer(@RequestBody Customer customer) {
+       cartService.saveCustomer(customer);
+   } 
+
+   @RequestMapping(path = "createCart/", method = RequestMethod.GET) 
+   public List<Cart> createCart() {
+       
+       Cart cart = cartService.saveCart();       
+       List<Cart> listCart = new ArrayList<Cart>();
+       listCart.add(cart);
+       
+       return listCart;
+   }
+
+    //Bug: JSON is not returned to browser as Cart Object. 
+    @RequestMapping(path = "/getCart/{cartID}", method = RequestMethod.GET) 
+    public List<Cart> getCart(@PathVariable String cartID) {
+	 Cart cart = cartService.getCartByCartID(cartID);
+	 List<Cart> listCart = new ArrayList<Cart>();
+	 listCart.add(cart);
+	 return listCart;
+    }
+    
+    @RequestMapping(path = "/getAllCartProducts/{cartID}", method = RequestMethod.GET)
+    public List<Product> getAllCartProducts(@PathVariable String cartID){  
+	return cartService.getAllCartProducts(cartID);
+    }

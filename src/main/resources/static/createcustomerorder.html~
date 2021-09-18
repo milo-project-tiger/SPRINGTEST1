@@ -1,0 +1,47 @@
+
+<script>
+
+
+  /* return String CreateOrder/{cartID}  {
+     
+        return cartID;          
+  } */
+function getCart( ){
+	//getCartID.
+	
+	var dummyCart = document.getElementById('cartID').innerHTML;
+	var cartList = document.getElementById('cartList');
+	var deleteLink = `<button>Remove Product</button>`
+	cartList.innerHTML = ''
+	fetch('http://localhost:8080/cart/getCart/'+ dummyCart)
+            .then(res => res.json())
+            .then(json => {
+		//alert(json.length)
+		for(i=0; i<json.length; i++){
+		    var products =""; 
+		    if (json[i].products!=null){
+			products = JSON.stringify(json[i].products[0])    
+			productsLen = JSON.stringify(json[i].products.length)
+			//alert(products); 
+			cartList.innerHTML +="<span>Number of Products in Cart: " + productsLen + "</br></span>"
+			cartList.innerHTML +="<span>Value of Cart: $ " + json[i].cartValue +"</br></span>"
+			
+			for(i=0; i<productsLen; i++){
+			    
+			    product = JSON.stringify(json[0].products[i].description)    
+			    price = JSON.stringify(json[0].products[i].sellingPrice)    
+			    name = JSON.stringify(json[0].products[i].name)    
+			    cartList.innerHTML +=   "<div>"+
+                                   "<span>Product Name: " + name + " </span></br> "+
+                                "<span> Description: " +  product + "</span></br> "+
+				"<span>Price: $" +  price + " </span></br> " 
+			    
+				+ deleteLink  + " </div>"
+			}
+		    }	   		      	       
+	      	   /*var addLink = `<button onclick='addProduct(${id})'>add to Cart</button>`
+		    
+		   */
+		}
+	    })
+</script>

@@ -1,0 +1,108 @@
+<html>  
+  <!-- SEPT M1. -->
+  <head>
+    <link rel="stylesheet" type="text/css"  href="list.css" />
+  </head>
+  <header><span>YING YANG SPIRIT: </span> <span>
+				      Herbs & Curios </span> </header>
+  
+  <h2>Add new Product</h2>
+  <div id='product_form'>
+    <span> Name: <input type="text" id="name"/> </span>
+    <span> Price: <input type="text" id="price"/> </span>
+    <span> Pcode: <input type="text" id="code"/> </span>
+    <span> Description: <textarea id="desc"> </textarea> </span>  
+  </div>
+  
+  <button onclick="add()">Add</button>
+</div>
+<h2>Add new StockNote </h2> 
+<div id='product_form'>
+    <span> QTY: <input type="text" id="qty"/> </span>
+    <span> PCODE: <input type="text" id="PID"/> </span>
+  </div>
+ <button onclick="stockUpdate()">stock update</button>
+
+  <h2>List of Products</h2>
+  <div id="productList"></div>
+  <script>
+    getProducts();
+    //description;
+    //private int sellingPrice;
+
+    function add(){ //put
+       var name = document.getElementById('name').value //get value from an html element
+	var desc = document.getElementById('desc').value //get value from an html element 
+	var price = document.getElementById('price').value
+	var pcode = document.getElementById('code').value 
+	fetch('http://localhost:8080/addProduct/', {
+            headers: {
+             'Accept': 'application/json',
+             'Content-Type': 'application/json'
+             },
+             method: "PUT",
+            body: JSON.stringify({name: name,description: desc,sellingPrice: price, pcode: pcode})
+
+     }).then(res => getProducts())
+	
+        console.log('Added')
+    }
+    
+    //commiting the Stock with qty...
+    function stockUpdate(){
+	var qty = document.getElementById('qty').value 
+	var PID = document.getElementById('PID').value 
+	fetch('http://localhost:8080/placeStock/?product_id='+PID+'&qty='+qty, {
+            headers: {
+             'Accept': 'application/json',
+             'Content-Type': 'application/json'
+             },
+             method: "PUT",
+            body: ""
+
+     }).then(res => getProducts())
+	
+        console.log('Stock Updated')
+        
+    }
+    
+    function getProducts(){
+        var productList = document.getElementById('productList');
+        productList.innerHTML = ''
+        fetch('http://localhost:8080/getAllProducts/')
+        .then(res => res.json())
+        .then(json => {
+
+           for(i=0; i<json.length; i++){
+               var id = json[i].pcode;
+	       var desc = json[i].description;
+               var deleteLink = `<button onclick='deleteProduct(${id})'>Delete</button>`
+	       var stocknoteObj ="";
+	       if (json[i].stockNote!=null){ 
+		   stocknoteObj = JSON.stringify(json[i].stockNote['qty']);}
+               productList.innerHTML += '<div>' + '<span> Product code: ' + json[i].pcode + '</span>'
+		   +  '<span> Product Name:' + json[i].name +  '</span>' +  '<span> Description:'
+		   + json[i].description +  '</span>' +  '<span> Price: $' + json[i].sellingPrice + '</span>'
+		   + '<span id="stockqty"> In Stock:' +  stocknoteObj + '</span>'
+		   + deleteLink  + '</div>'
+           }
+       })
+    }
+    
+    function deleteProduct(id){
+	
+	fetch('http://localhost:8080/deleteProduct/'+id, {
+            method: 'delete'
+          })
+            .then(res=> getProducts())
+	deleteStockNote(id);
+    }
+
+    function deleteStockNote(id){
+	 fetch('http://localhost:8080/deleteStockNote/'+id, {
+            method: 'delete'
+          })
+      
+    }
+    </script>
+</html>

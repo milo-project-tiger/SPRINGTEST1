@@ -3,7 +3,7 @@ package test;
 import service.OrderSystemService;
 import service.CartService;
 import controller.CartController;
-
+import java.util.Iterator;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import model.Product;
@@ -34,10 +34,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import  org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.*;
 import  org.mockito.MockitoAnnotations.Mock;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.http.MediaType;
+
+//import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.hamcrest.Matchers.containsString;
@@ -108,6 +113,41 @@ public class CartControllerTest {
 	this.productList = null;
 	this.cart = null;
     }
+
+    
+        
+    @Test   //PASS
+    public void cartIsCorrectlyAppendedToSession() throws Exception {
+	
+	this.productList = new ArrayList<>();
+	this.productList.add(new Product("Product1"));
+	this.productList.add(new Product("Product2"));
+	this.productList.add(new Product( "Product3"));
+	
+	Cart cartTest = new Cart();
+	cartTest.setCartID("cart303");
+	String cartID = cartTest.getCartID();	
+	Assert.assertTrue(cartID!=null);
+	
+	// add the products to cart.
+	cartTest.setProducts(productList);
+		
+	given(cartService.getCartByCartID(cartID)).willReturn(cartTest);
+	given(cartService.getCartInSession()).willReturn(cartTest);
+	
+	///getCart/{cartID}
+        this.mockMvc.perform(get("/cart/setCartSession/{cartID}", cartID))
+	    .andExpect(status().isOk())
+	    //   .andExpect(jsonPath("$.cartID", is(cartTest.getCartID())))
+	.andExpect(jsonPath("$[0].products.size()", is(productList.size())));
+
+	this.mockMvc.perform(get("/cart/getSessionCart/"))
+	    .andExpect(status().isOk())
+	    //   .andExpect(jsonPath("$.cartID", is(cartTest.getCartID())))
+	.andExpect(jsonPath("$[0].products.size()", is(productList.size())));
+	
+    }
+   
     
     @Test  //PASS
     public void getCartByIDShouldReturnCorrectCart() throws Exception {
@@ -118,24 +158,12 @@ public class CartControllerTest {
 	//Assert.assertTrue(this.cart!=null);
 	                                             //Optional.of(      );
         given(cartService.getCartByCartID(cartID)).willReturn(cartTest);
-	                                    ///getCart/{cartID}
+	//	given(cartService.getCartByCartID(cartID)).willReturn(cartTest);
+	///getCart/{cartID}
         this.mockMvc.perform(get("/cart/getCart/{cartID}", cartID))
 	 .andExpect(status().isOk())
 	 .andExpect(jsonPath("$[0].cartID", is(cartTest.getCartID())));
-		 
-        /*given(userService.saveCart(any(Cart.class))).willAnswer((invocation) -> invocation.getArgument(0));
-	//given(cartService.getAllCartProducts(cartID)).willReturn(productList);
-	User user = new User(4L, "newuser1@gmail.com", "pwd#@4sfsS", "Name");
-
-        this.mockMvc.perform(post("/api/users")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsString(user)))
-                .andExpect(status().isCreated())
-       	
-       this.mockMvc.perform(get("/cart/getCart/{cartID}", cartID))
-	   .andExpect(status().isOk());
-	   //.andExpect(jsonPath("$.size()", is(productList.size())));  */
-	// Assert.assertTrue(productList.size() > 0);
+		
     }
     @Test //PASS
     public void shouldFetchAllCartProducts() throws Exception {
@@ -171,47 +199,57 @@ public class CartControllerTest {
 	
 	
     }
-    @Test  //revise
+    @Test  //revise tests.. the total cart price AND that the cart updates.
     public void cartReturnsCorrectTotalPrice() throws Exception {
 
 	this.productList = new ArrayList<>();
 	this.productList.add(new Product("Product1"));
 	this.productList.add(new Product("Product2"));
 	this.productList.add(new Product( "Product3"));
-	
+
+	Iterator iter = productList.iterator();
+	int i = 1;
+	int cartValue = 0;
+	while (iter.hasNext()){
+	    Product p = (Product) iter.next();
+	    p.setPcode("hello" + Integer.toString(i*500));
+	    p.setSellingPrice(i * 1000 );
+	    //1000 + 2000 + 3000 = 6000
+	    cartValue += p.getSellingPrice();  
+	    i++;  
+	}
 	//create a cart
+
 	Cart cartTest = new Cart();
 	cartTest.setCartID("cart555");
 	String cartID = cartTest.getCartID();	
 	Assert.assertTrue(cartID!=null);
-	
-	// add the products to cart.
-	cartTest.setProducts(productList);
-	
+	String pcode = productList.get(0).getPcode();
+	Product prod = productList.get(0);
+	//cartTest.setProducts(productList);
 	given(cartService.getCartByCartID(cartID)).willReturn(cartTest);
-	this.mockMvc.perform(get("/cart/getCart/{cartID}", cartID))
-	 .andExpect(status().isOk())
-	 .andExpect(jsonPath("$[0].cartID", is(cartTest.getCartID())))
-	.andExpect(jsonPath("$[0].products.size()", is(productList.size())));  
+	given(orderSystemService.getProductByPcode(pcode)).willReturn(prod);
 	
-	//given(userService.mergeCart(any(Cart.class))).willAnswer((invocation.getArgument(0)));
-	//-> invocation.getArgument(0));
-	
-        given(cartService.getAllCartProducts(cartID)).willReturn(productList);	
-        this.mockMvc.perform(get("/cart/getAllCartProducts/{cartID}", cartID))
+	//when(cartService.mergeCart(cartTest)).thenReturn(true);		
+	this.mockMvc.perform(put("/cart/addProductToCart/{pcode}", pcode)
+			     //.contentType(MediaType.APPLICATION_JSON_UTF8)
+			     .param("cartID", "cart555"))       //.andReturn().getResponse().getStatus())
 	    .andExpect(status().isOk())
-	.andExpect(jsonPath("$.size()", is(productList.size())));  
-	
+	    .andExpect(jsonPath("$.products.size()", is(1)))
+	    .andExpect(jsonPath("$.products").isArray())
+	    .andExpect(jsonPath("$.cartValue", is(prod.getSellingPrice())));
 
-
-
-	//this.mockMvc.perform(get("/cart/createCart/")).andDo(print()).andExpect(status().isOk());
-
-	//.andExpect(content().string(containsString("hello")));
-	
+	this.mockMvc.perform(put("/cart/addProductToCart/{pcode}", pcode)
+			     //.contentType(MediaType.APPLICATION_JSON_UTF8)
+			     .param("cartID", "cart555"))       //.andReturn().getResponse().getStatus())
+	    .andExpect(status().isOk())
+	    .andExpect(jsonPath("$.products.size()", is(2)))
+	.andExpect(jsonPath("$.cartValue", is(2 * prod.getSellingPrice())));
+	//verify(cartService).mergeCart(cartTest);	
     }
-    
-    @Test
+
+	    
+    @Test  //Do
     public void shouldUpdateCartWithNewProducts() throws Exception {
 	 /* Long userId = 1L;
         User user = new User(userId, "user1@gmail.com", "pwd$232DD12ff", "Name");
@@ -228,32 +266,6 @@ public class CartControllerTest {
 	     //    .andExpect(jsonPath("$.email", is(user.getEmail())))
 	 */
      } 
-	    
-    @Ignore
-    public void test1() throws IOException {
 
-        try{
-	        URL url = new URL(TestConfig.URL+"products");
-	        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-	        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
-	        String line = "";
-	        StringBuilder stringBuilder = new StringBuilder();
-	
-	        while((line = bufferedReader.readLine()) !=null){
-	            stringBuilder.append(line);
-	        }
-	
-	        Gson gson = new Gson();
-	        String json = stringBuilder.toString();
-	        List<Product> products = gson.fromJson(json, new TypeToken<List<Product>>(){}.getType());
-	        //String s = stringBuilder.toString();
-	        Assert.assertEquals(products.get(0).getName(), "Thanh");
-	        
-	    } catch (MalformedURLException e) {
-	        e.printStackTrace();
-	    } catch (IOException e) {
-	        e.printStackTrace();
-    }
-}
 
 }
