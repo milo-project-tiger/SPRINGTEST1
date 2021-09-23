@@ -11,11 +11,15 @@ import com.google.gson.reflect.TypeToken;
 import model.Receipt;
 import model.Product;
 import model.Cart;
+
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
 import org.junit.Ignore;
+//import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.BeforeEach;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -29,8 +33,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.junit.runner.RunWith;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -40,7 +42,6 @@ import  org.mockito.MockitoAnnotations;
 import static org.mockito.Mockito.*;
 import  org.mockito.MockitoAnnotations.Mock;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.MediaType;
 
 //import static org.mockito.ArgumentMatchers.any;
@@ -52,12 +53,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 import static org.hamcrest.Matchers.hasSize;
-//import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 
-//import org.junit.jupiter.api.Before;
-//import org.junit.jupiter.api.Test;
 //import static org.hamcrest.MatcherAssert.assertThat;
 //import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -69,158 +67,183 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class ReceiptControllerTest {
 
-    private MockMvc mockMvc;
+   private MockMvc mockMvc;
 
-    @Mock
-    private OrderSystemService orderSystemService;
+   @Mock
+   private OrderSystemService orderSystemService;
 
-    @Mock
-    private CartService cartService;
+   @Mock
+   private CartService cartService;
 
-    @Mock
-    private ReceiptService receiptService;
+   @Mock
+   private ReceiptService receiptService;
     
-    private List<Product> productList;
+   private List<Product> productList;
 
-    protected Cart cart;
+   private List<Receipt> receiptList;
+   
+   private List<String> intList = new ArrayList();
+   
+   protected Cart cart;
 
+   private String cartID;
+   private Receipt receipt;
     
-    @Before
-    public void setup() {
-	MockitoAnnotations.initMocks(this);
-	mockMvc = MockMvcBuilders.standaloneSetup(new ReceiptController(cartService, receiptService))
-            //.setHandlerExceptionResolvers(exceptionResolver()) //crucial for standaloneSetup of MockMVC
-            .build();
-    }
+   @Before
+   public void setup() {
+      MockitoAnnotations.initMocks(this);
+      mockMvc = MockMvcBuilders.standaloneSetup(new ReceiptController(cartService, receiptService))
+	 //.setHandlerExceptionResolvers(exceptionResolver()) //crucial for standaloneSetup of MockMVC
+	 .build();
+   }
     
-    @BeforeEach
-    public void setUpData() {    
-	//  objectMapper.registerModule(new ProblemModule());
-        //objectMapper.registerModule(new ConstraintViolationProblemModule());
-	//list of products
-       this.productList = new ArrayList<>();
-       Product p1 = new Product("Product1");
-       p1.setPcode("123abc");
-       this.productList.add(new Product("Product1"));
-       this.productList.add(new Product("Product2"));
-       this.productList.add(new Product( "Product3"));
+   @Before
+   public void setUpData() {    
+      //  objectMapper.registerModule(new ProblemModule());
+      //objectMapper.registerModule(new ConstraintViolationProblemModule());
+
+      //receipt for Order of tiger beer.
+      this.receipt = new Receipt();
+      this.receipt.setPassPhrase("mojojojo");
+      this.receipt.setCustomerName("Morgana");
+      this.receipt.setDOB("090990");
+      this.receipt.setOrderStatus("PENDING");
+      this.receipt.setPayment("crypto");
+      this.receipt.setShippingDetails("Ton Duc Tanh");
+      //this.receipt.setCart("tigerbeercart");
+      /*
+      this.receipt = new Receipt();
+      this.receipt.setPassPhrase("mojojojo");
+      this.receipt.setCustomerName("Morgana");
+      this.receipt.setDOB("090990");
+      this.receipt.setOrderStatus("PENDING");
+      this.receipt.setPayment("crypto");
+      this.receipt.setShippingDetails("Ton Duc Tanh"); */
+      //this.receipt.setCart("tigerbeercart");
+
+
+      
+      //list of products
+      this.productList = new ArrayList<>();
+      Product p1 = new Product("Product1");
+      p1.setPcode("123abc");
+      this.productList.add(new Product("Product1"));
+      this.productList.add(new Product("Product2"));
+      this.productList.add(new Product( "Product3"));
+
+      
+      //create a cart
+      this.cart = new Cart();
+      this.cart.setCartID("milk123");
+      this.cart.setCartValue(1000);
+      //cartService.savetCart(this.cart);
+      this.cartID = cart.getCartID();	
+      //given(cartService.getCartByCartID(cartID)).willReturn(this.cart);
+
+      Assert.assertTrue(this.cartID!=null);
+
+
+      
+      // add the products to cart.
+      // this.cart.setProducts(productList);
+      
+       // when(cartService.mergeCart(any(Cart.class))).thenReturn(this.cart);    
+   }
+    
+   @After
+   public void tearDown(){
+      this.productList = null;
+      this.cart = null;
+      this.receipt = null;
+   }   
+
+   @Test  
+   public void newOrderMustHaveUniqueCode(){
+
+      
+   }
+
+   @Test   //PASS
+   public void orderStatusUpdatesCorrectly() throws Exception{
+      // "changeStatus/{passPhrase}" //passPhrase status
+      String pass = this.receipt.getPassPhrase();
+
+      
+      
+      //update status with acceptable value
+      given(receiptService.getReceiptByPassPhrase(pass)).willReturn(this.receipt);
+      this.mockMvc.perform(put("/receipt/changeStatus/{passPhrase}",pass)
+			   //.param("customerName","Morgana")
+			   //.param("Payment", "crypto")
+			   .param("status", "DONE"))	     
+			   //.param("cartID", "cartIDxxxx")
+			   // .param("status", "in-transit")
+			   //.param("DOB", "090990")) 
+	 .andExpect(status().isOk());
+      this.mockMvc.perform(put("/receipt/getReceipt/{passPhrase}",pass))
+	 //returns expected result
+	 .andExpect(jsonPath("$[0].orderStatus", is("DONE")));
+      
+   }
+
+   @Test   //PASS
+   public void incorrectStatusValueDoesNotUpdateOrderStatus() throws Exception{
+
+      String pass = this.receipt.getPassPhrase();
+      //update status with acceptable value
+      given(receiptService.getReceiptByPassPhrase(pass)).willReturn(this.receipt);
+      
+      //update status with incorrect value 
+      this.mockMvc.perform(put("/receipt/changeStatus/{passPhrase}",pass)
+			   .param("status", "WRONG"))	     
+	 .andExpect(status().isOk());
+      this.mockMvc.perform(put("/receipt/getReceipt/{passPhrase}",pass))
+	 //returns expected result
+	 .andExpect(jsonPath("$[0].orderStatus", is("PENDING")));
+         
+   }
+   
+   @Test void getAllReceiptsReturnsCorrectNumberOfResults(){
+      
+   }
+   
+   @Test   //FAIL
+   public void ReceiptFetchedCorrectlyByPassPhrase() throws Exception {
+      String pass = this.receipt.getPassPhrase();
+      given(receiptService.getReceiptByPassPhrase(pass)).willReturn(this.receipt);
+      //setCartInSession
+      cartService.setCartInSession(this.cart);
+      given(cartService.getCartByCartID(cartID)).willReturn(this.cart);
+      given(cartService.getCartInSession()).willReturn(this.cart);	 
+      
+      this.mockMvc.perform(put("/receipt/getReceipt/{passPhrase}",pass)
+			   .param("DOB", "090990"))
+	 .andExpect(status().isOk())
+	 .andExpect(jsonPath("$[0].dob", is(this.receipt.getDOB())))
+	 .andExpect(jsonPath("$[0].customerName", is(this.receipt.getCustomerName())))
+      .andExpect(jsonPath("$[0].shippingDetails", is("Ton Duc Tanh")))
+	  .andExpect(jsonPath("$[0].payment", is("crypto")))
+	  // .andExpect(jsonPath("$.cart.cartID", is("cartIDxxxx")))
+	 .andExpect(jsonPath("$[0].orderStatus", is("PENDING")));
+//         .andExpect(jsonPath("$[0].total", is("1000")));
+      
+      //.andExpect(jsonPath(".$cart.products.size()", is(productList.size())));
+      /*this.mockMvc.perform(get("/cart/getSessionCart/"))
+	.andExpect(status().isOk())
+	//   .andExpect(jsonPath("$.cartID", is(cartTest.getCartID())))
+	.andExpect(jsonPath("$[0].products.size()", is(productList.size())));
+      */
+   }
+
+   @Test
+   public void receiptSavedandRetrievedCorrectly(){
+      
+   }
+
+   @Test
+   public void receiptReturnsNullIfNoPassphraseORIncorrectFormatDOB(){
+      
+   }
 
    
-       //create a cart
-       this.cart = new Cart();
-       this.cart.setCartID("milk123");
-       cartService.saveCart(this.cart);
-       String cartID = this.cart.getCartID();	
-       given(cartService.getCartByCartID(cartID)).willReturn(this.cart);
-       // add the products to cart.
-       this.cart.setProducts(productList);
-       cartService.mergeCart(this.cart);
-
-    }
-    
-    @After
-    public void tearDown(){
-	this.productList = null;
-	//this.cart = null;
-    }   
-    
-    @Test   //FAIL
-    public void RecieptFetchedCorrectlyByPassPhrase() throws Exception {
-		
-	//Cart cartTest = new Cart();
-	//cartTest.setCartID("cart555");
-	/*	String cartID = this.cart.getCartID();	
-	//Assert.assertTrue(cartID!=null);
-	String pcode = this.cart.getProducts().get(0).getPcode();
-	Product prod = this.cart.getProducts().get(0);
-	//cartTest.setProducts(productList);
-
-	given(cartService.getCartByCartID(cartID)).willReturn(this.cart);
-	given(orderSystemService.getProductByPcode(pcode)).willReturn(prod);
-	*/
-	
-	Receipt receiptTest = new Receipt();
-	receiptTest.setPassPhrase("helloWorld");
-	receiptTest.setCustomerName("Morgana");
-	receiptTest.setDOB("090990");
-	
-	/*
-	receiptTest.setPayment("crypto");
-	receiptTest.setShipping("Ton Duc Tanh");
-	receiptTest.setCart("090990");
-	*/
-	String pass = receiptTest.getPassPhrase();
-	String DOB =  receiptTest.getDOB();
-	given(receiptService.getReceiptByPassPhrase(pass,DOB )).willReturn(receiptTest);
-	///getCart/{cartID}
-        this.mockMvc.perform(put("/receipt/getReceipt/{passPhrase}",pass)
-			     .param("customerName","Morgana")
-			     .param("Payment", "crypto")
-			     .param("shipping", "Ton Duc Tanh")	     
-			     .param("cartID", "cartIDxxxx")
-			     .param("status", "in-transit")
-			     .param("DOB", "090990"))
-	    .andExpect(status().isOk())
-	    .andExpect(jsonPath("$.dob", is(receiptTest.getDOB())))
-	    .andExpect(jsonPath("$.customerName", is(receiptTest.getCustomerName())))
-	    .andExpect(jsonPath("$.shipping", is("Ton Duc Tanh")))
-	    .andExpect(jsonPath("$.shipping", is("crypto")))
-	    .andExpect(jsonPath("$.cart.cartID", is("cartIDxxxx")))
-	    .andExpect(jsonPath("$.status", is("in-transit")));
-	    
-	//.andExpect(jsonPath(".$cart.products.size()", is(productList.size())));
-	/*this.mockMvc.perform(get("/cart/getSessionCart/"))
-	  .andExpect(status().isOk())
-	  //   .andExpect(jsonPath("$.cartID", is(cartTest.getCartID())))
-	  .andExpect(jsonPath("$[0].products.size()", is(productList.size())));
-	*/
-    }
-
-    @Test
-    public void receiptReturnsNullIfNoPassphraseORIncorrectFormatDOB(){
-
-
-
-
-    }
-
-    
-	    /*
-    @Test
-    public void orderStatusSuccessfullyUpdates(){
-       
-       Receipt receiptTest = new Receipt();
-       receiptTest.setPassPhrase("helloWorld");
-       receiptTest.setCustomerName("Morgana");
-       receiptTest.setPayment("crypto");
-       receiptTest.setShipping("Ton Duc Tanh");
-       receiptTest.setCart("090990");
-       
-       String pass = receiptTest.getPassPhrase();
-       String DOB =  receiptTest.getDOB();
-       given(receiptService.getReceiptByPassPhrase(pass,DOB )).willReturn(receiptTest);
-           
-      
-    }
-*/
-	    
-
-	    
-    /*
-    @Test  //and D.O.B
-    public void receiptCanBeDisplayedByPassphrase() throws Exception {
-	Cart cartTest = new Cart();
-	cartTest.setCartID("cart303");
-	String cartID = cartTest.getCartID();	
-	Assert.assertTrue(cartID!=null);
-	//Assert.assertTrue(this.cart!=null);
-	                                             //Optional.of(      );
-        given(cartService.getCartByCartID(cartID)).willReturn(cartTest);
-	//	given(cartService.getCartByCartID(cartID)).willReturn(cartTest);
-	///getCart/{cartID}
-        this.mockMvc.perform(get("/cart/getCart/{cartID}", cartID))
-	 .andExpect(status().isOk())
-	 .andExpect(jsonPath("$[0].cartID", is(cartTest.getCartID())));
-		
-	 }*/
 }

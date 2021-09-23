@@ -30,6 +30,12 @@ public class Receipt {
     
     @Column
     private String passPhrase;
+
+    @Column
+    private String orderStatus;   //{ PENDING | APPROVED | SHIPPING | DONE  }
+
+    @Column
+    private int total = 0;
     
     @OneToMany(mappedBy = "receipt", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ReceiptDetail> receiptDetails;
@@ -53,6 +59,23 @@ public class Receipt {
         this.id = id;
     }
 
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    
+    public String getOrderStatus() {
+        return this.orderStatus;
+    }
+
+    public void setOrderStatus(String status) {
+        this.orderStatus = status;
+    }
+    
     public String getDOB() {
         return DOB;
     }

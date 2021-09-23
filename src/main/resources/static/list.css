@@ -1,15 +1,135 @@
+div#productList:last-of-type{
+  margin-bottom:60%;
+}
+
+aside{
+position:relative;
+  margin-top:40%;
+  bottom:-50%;
+}
+
+/* reciept-list background
+*/
+section#receiptList{
+  background-image: url("http://localhost:8080/static/dragon.jpg");
+  background-size: 100%;
+  /* "http://localhost:8080/static/header_theme_2.png" */
+  height:100%;   
+}
+
+#receiptList>span{
+  
+  height:100%;
+  color:gold;
+  background-color: #1119;
+  padding:5;
+  border-radius:20%;
+}
+
+/* search order title   */
+
+div#productList{
+  
+  background-image: url("http://localhost:8080/static/dragon.jpg");
+  background-size: 100%;
+  /* "http://localhost:8080/static/header_theme_2.png" */
+  height:100%;
+  color:gold;
+  line-height:
+  /*text-shadow:2px 2px 2px blue ; */
+}
+div#productList>div{
+  background-color: #1119;
+}
+
+
+/* search order title   */
+h3{
+  display:block;
+  background-image: linear-gradient(red, orange, green);
+  color:;
+  text-shadow:2px 2px 2px blue ;
+  border-radius:20%;
+  font-size:40;
+  margin-top: -30;
+  margin-left:100;
+  text-decoration:overline ;
+  height:150;
+  padding:100;
+}
+/* order search label   */
+h3+label{
+  background-color:black;
+   color:lightseagreen  
+}
+
+
+div#cartList > span:nth-last-of-type(2n+1){
+  color:red;
+  background-color:black;
+}
 section{
   column-count: 4;
   border:solid black;
   padding:20; 
+  background-image: repeating-linear-gradient(to top, whitesmoke 35%, black 41%);
+}
+section>#order_instruct
+{
+  color:goldenrod;
+  background-color:darkred;
+  font-family: gothic ;
+  padding:20;
+  text-shadow:2px 2px 4px black;
+  
+}
+button#receipt{
+  position:fixed;
+  top: 450;
+  right:20;
+  background-color:black;
+  color:gold;
+  border:20px solid goldenrod;
+  box-shadow: 2px 2px 15px blue;
+  border-radius:30%;
+}
+button#receipt:hover{
+  box-shadow:-2px -2px 30px green;
+  color: green;
+  font-size:30px;
+  font-weight:bolder;  border:20px solid green;
+  top:440;
 }
 
-section>span{  
-  display:;
+section>span>#DOB{
+  
+  width:100%
 }
+section>span{  
+  display:inline-block;
+}
+section>span>input:hover{
+  box-shadow:2px 2px 30px blue; 
+}
+section>span>textarea:hover{
+  box-shadow:2px 2px 30px blue; 
+}
+section>span>label{
+  font-family: helvetica;
+  color: ;
+  padding:5;
+  letter-spacing:1.2  ;
+  margin-bottom:20;
+  background-color: black; 
+  font-weight:;
+  color:greenyellow;
+  text-shadow:1px 1px 13px black, -1px -1px 13px black;
+}
+  
+
 
 section>span:nth-of-type(2)>input{
-  background-color:darkred;
+  background-color:black;
   width:100%;
   margin-left:-15;  
   color:gold; 
@@ -27,17 +147,15 @@ section>span>input{
  color:aqua; 
 }
 
-section>span>textarea{
-  
+section>span>textarea{ 
  font-size:larger;
- width:100%;
- margin-right:500;
+ width:130%;
+ margin-left:-60;
  height:30%;
  background-color:black;
  border-radius:20%;
  padding-top:10;
- color:aqua;
-  
+ color:aqua;  
 }
 
 header{ 
@@ -73,6 +191,30 @@ header>span:nth-of-type(even){
   font-style: italic;
   text-shadow:2px 2px 4px black;
 }
+/* order button*/
+div#create>button{
+  position:;
+  background-image:
+  repeating-conic-gradient(pink 30%, gold 40%);
+  border:6px solid green;
+  height:20%;
+  bottom:30;
+  margin-left:75%;
+  box-shadow: 2px 2px 20px green;
+  border-radius:30%;
+  text-decoration-line: overline;
+}
+div#create>button:hover{
+  background-image: repeating-conic-gradient(
+black 30%, green 40%);
+  box-shadow: 2px 2px 20px blue;
+  font-size:larger;
+  color:gold;
+  font-weight: bolder;
+  left:2%;
+}
+
+
 
 header>span:nth-of-type(odd){
  text-decoration-line:;
@@ -92,26 +234,62 @@ body{
     background-color: pink;
     background-image: linear-gradient(pink, orange);
 }
-
+/*
 div#cartList>span:nth-last-of-type(even){
   background-color:blue;
   border:2px solid white;
-  width:30%;
+  width:20%;
   height:30;
   padding:20;
   border-radius:20px;
 }
-div#cartList>span:nth-last-of-type(odd){
-  display:block;
-  background-color:greenyellow;
+*/
+div#cartList > span:nth-last-of-type(2n){
+  position:fixed;
+  top:10;
+  right:10;
+  display: block;
+  background-color:#6666;
   border:2px solid white;
-  width:30%;
-  height:30;
+  color:;
+  font-style:oblique;
+  width:88;
+  height:90;
   padding:20;
   border-radius:20px;
-  margin-left:50%;
+}
+div#cartList > span:nth-last-of-type(2n):first-letter{
+  display:block; 
+  color:gold;
+  background-color: black;
+  padding:20;
+  border-radius: 90%;
+  
 }
 
+div#cartList>span:nth-last-of-type(2n){
+  background-color:;
+  text-shadow:2px 2px 10px blue;
+  color:white; 
+}
+
+
+div#cartList>span:nth-last-of-type(odd){
+  display:block;
+  background-color:black;
+  border:2px solid white;
+  margin-top:10; 
+  margin-bottom:50;
+ /* width:20%; */
+  height:30;
+  padding:20;
+  padding-top:50 ;
+  text-align: center;
+  border-radius:20px;
+  margin-left:50%;
+  font-family: monospace;
+}
+/*
 div#cartList>span:nth-last-of-type(even){
   background-color:blue;
     border:2px solid white;
@@ -121,6 +299,7 @@ div#cartList>span:nth-last-of-type(even){
     margin-left:50%;
   border-bottom:none;
 }
+*/
 div#cartList>div:nth-last-of-type(odd){
   display:block;
   background-color: pink;

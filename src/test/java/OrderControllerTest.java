@@ -58,79 +58,81 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class OrderControllerTest {
 
-    private MockMvc mockMvc;
+   private MockMvc mockMvc;
 
-    @Mock
-    private OrderSystemService orderSystemService;
+   @Mock
+   private OrderSystemService orderSystemService;
 
-    private List<Product> productList;
+   private List<Product> productList;
 
-    @Before
-    public void setup() {
-	MockitoAnnotations.initMocks(this);
-	mockMvc = MockMvcBuilders.standaloneSetup(new OrderSystemController(orderSystemService))
-            //.setHandlerExceptionResolvers(exceptionResolver()) //crutial for standaloneSetup of MockMVC
-            .build();
+   @Before
+   public void setup() {
+      MockitoAnnotations.initMocks(this);
+      mockMvc = MockMvcBuilders.standaloneSetup(new OrderSystemController(orderSystemService))
+	 //.setHandlerExceptionResolvers(exceptionResolver()) //crutial for standaloneSetup of MockMVC
+	 .build();
 
-       this.productList = new ArrayList<>();
-       this.productList.add(new Product("Product1"));
-       this.productList.add(new Product("Product2"));
-       this.productList.add(new Product( "Product3"));
-    }
+      this.productList = new ArrayList<>();
+      this.productList.add(new Product("Product1"));
+      this.productList.add(new Product("Product2"));
+      this.productList.add(new Product( "Product3"));
+   }
     
-    @BeforeEach
-    public void setUpData() {    
-	//  objectMapper.registerModule(new ProblemModule());
-        //objectMapper.registerModule(new ConstraintViolationProblemModule());
-    }
+   @BeforeEach
+   public void setUpData() {    
+      //  objectMapper.registerModule(new ProblemModule());
+      //objectMapper.registerModule(new ConstraintViolationProblemModule());
+   }
 
-    @After
-    public void tearDown(){
-	this.productList = null;
-    }
+   @After
+   public void tearDown(){
+      this.productList = null;
+   }
     
-    @Test
-    public void shouldFetchAllProducts() throws Exception {
+   @Test
+   public void shouldFetchAllProducts() throws Exception {
        
-        given(orderSystemService.getAllProducts()).willReturn(productList);
-	
-        this.mockMvc.perform(get("/getAllProducts/"))
-	    .andExpect(status().isOk())
-	.andExpect(jsonPath("$.size()", is(productList.size())));  
-	// Assert.assertTrue(productList.size() > 0);
-	}
-   
-    @Test
-    public void shouldReturnDefaultMessage() throws Exception {
-	this.mockMvc.perform(get("/hello")).andDo(print()).andExpect(status().isOk())
-	.andExpect(content().string(containsString("hello")));
-    }
-    
-    @Ignore
-    public void test1() throws IOException {
+      given(orderSystemService.getAllProducts()).willReturn(productList);	
+      this.mockMvc.perform(get("/getAllProducts/"))
+	 .andExpect(status().isOk())
+	 .andExpect(jsonPath("$.size()", is(productList.size())));  
+      // Assert.assertTrue(productList.size() > 0);
+   }
 
-        try{
-	        URL url = new URL(TestConfig.URL+"products");
-	        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-	        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
-	        String line = "";
-	        StringBuilder stringBuilder = new StringBuilder();
+   @Test
+   public void shouldRemoveProduct(){}
+   
+   @Ignore
+   public void shouldReturnDefaultMessage() throws Exception {
+      this.mockMvc.perform(get("/hello")).andDo(print()).andExpect(status().isOk())
+	 .andExpect(content().string(containsString("hello")));
+   }
+    
+   @Ignore
+   public void test1() throws IOException {
+
+      try{
+	 URL url = new URL(TestConfig.URL+"products");
+	 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+	 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+	 String line = "";
+	 StringBuilder stringBuilder = new StringBuilder();
 	
-	        while((line = bufferedReader.readLine()) !=null){
-	            stringBuilder.append(line);
-	        }
+	 while((line = bufferedReader.readLine()) !=null){
+	    stringBuilder.append(line);
+	 }
 	
-	        Gson gson = new Gson();
-	        String json = stringBuilder.toString();
-	        List<Product> products = gson.fromJson(json, new TypeToken<List<Product>>(){}.getType());
-	        //String s = stringBuilder.toString();
-	        Assert.assertEquals(products.get(0).getName(), "Thanh");
+	 Gson gson = new Gson();
+	 String json = stringBuilder.toString();
+	 List<Product> products = gson.fromJson(json, new TypeToken<List<Product>>(){}.getType());
+	 //String s = stringBuilder.toString();
+	 Assert.assertEquals(products.get(0).getName(), "Thanh");
 	        
-	    } catch (MalformedURLException e) {
-	        e.printStackTrace();
-	    } catch (IOException e) {
-	        e.printStackTrace();
-    }
-}
+      } catch (MalformedURLException e) {
+	 e.printStackTrace();
+      } catch (IOException e) {
+	 e.printStackTrace();
+      }
+   }
 
 }
