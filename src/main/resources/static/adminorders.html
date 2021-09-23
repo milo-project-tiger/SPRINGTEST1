@@ -5,13 +5,45 @@
   <header><span>YING YANG SPIRIT </span> <span>
       Herbs & Curios </span> </header>
   
-  <div class="user_notice_bar"> <span>User: </span> <span id="cart_inc"> </span> </div>
+  <div class="user_notice_bar"> <span> </span> <span id="cart_inc"> </span> </div>
+
+  <h3>edit order status</h3>
+  <label for='search'>Enter order code:</label>
   
-  <div id='orders'>   </div>
+  <input id='search' type='text'>   </input>
+  <label for='search'>Enter new order Status</label>
+  <span>"APPROVED" | "SHIPPING" | "CANCELED" | "DONE" </span>
+  <input id='status' type='text'></input>
+    
+    <button onclick='editStatus()' id='searchButton'>Search</button>
+     
+    <div id='orders'>   </div>
+ 
   
   <script>
     getOrders();
-  function getOrders(){
+
+
+    
+      
+  function editStatus(){
+      var pass = document.getElementById('search').value;
+      var status = document.getElementById('status').value;
+ 
+      fetch('/receipt/changeStatus/'+ pass + '/?status='+status, {
+            headers: {
+		'Accept': 'application/json',
+		'Content-Type': 'application/json'
+            },
+            method: "PUT",
+            body: ""
+	    
+      }).then(alert("confirmed")).then(getOrders())
+      
+  }
+
+    
+    function getOrders(){
      	//alert("sanity")
 	  var orders = document.getElementById('orders');
       //var phrase = document.getElementById('search').value;
@@ -37,6 +69,7 @@
 		    orders.innerHTML += "<span id='r_payment'>Payment: " + payment + "</br></span>"
 		    orders.innerHTML +="<span>Total: $" + json[i].total +"</br></span>"  
 		    orders.innerHTML += "<span id='r_status'>Order Progress: "+ status +  "</br></span>"
+		    
 		    orders.innerHTML += "<div>";
 		}
 	    })
@@ -44,12 +77,6 @@
       
   }
   
-      
-  function editOrderStatus(){
-      
-      
-  }
-
 
 
   </script>

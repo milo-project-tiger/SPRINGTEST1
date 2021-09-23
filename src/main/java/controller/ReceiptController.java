@@ -79,20 +79,29 @@ public class ReceiptController {
 
    @RequestMapping(path = "changeStatus/{passPhrase}", method = RequestMethod.PUT)
    public boolean changeOrderStatus(@PathVariable String passPhrase, @RequestParam String status){
-//,  @RequestParam String DOB,
+   //,  @RequestParam String DOB,
       //@RequestParam String admincode){}
 
       Receipt receipt = receiptService.getReceiptByPassPhrase(passPhrase);
       //{ PENDING | APPROVED | SHIPPING | DONE  }
       if (status.equals("PENDING") || status.equals("APPROVED") ||
 	  status.equals("SHIPPING") || status.equals("DONE")){
-	    receipt.setOrderStatus(status);
-	    receiptService.mergeReceipt(receipt);
-	    return true;
+	 // "CANCELED" 
+	   receipt.setOrderStatus(status);
+	   receiptService.mergeReceipt(receipt);
+	   return true;
       }
-      else {
+      else if ( status.equals("CANCELED")) {
+	 receipt.setOrderStatus(status);
+	 receiptService.mergeReceipt(receipt);
+	 return true;
+      }
+	 else {
+	    
 	 return false;
-      }
-	       
+
+	 } 
    }
+	       
+
 }
