@@ -124,34 +124,89 @@ public class CartControllerTest {
       this.productList = null;
       this.cart = null;
    }
-   
+    
+
+   @Test
+   public void productRemovedFromCartReflectedInSession(){
+
+   }
+    
    @Test  //S
    public void whenProductAddedToCartStocknoteQtyDecreases(){
-
+       
+       
    }
     
    @Test  //S  //R
    public void whenProductRemoveToCartStocknoteQtyIncreases(){
 
+       
    }
 
    @Test  //R
-   public void productsAddToCartAfterOneOrAllRemoved(){}
+   public void productsAddToCartAfterOneOrAllRemoved(){
+
+   }
 
    @Test  //S
    public void outOfStockItemNotAdded(){}
-
+    
     @Test   //CART SESSION?
    public void noDuplicateCarts(){}
 
-   @Test   //R
-   public void correctProductRemovedFromCart(){}
+   @Test   //PASS
+   public void correctProductRemovedFromCart() throws Exception{
+       
+      Assert.assertTrue(this.productList.size() == 3);
+      Assert.assertTrue(cartID!=null);
+
+      given(cartService.getCartByCartID(cartID)).willReturn(this.cart);
+      given(cartService.getCartInSession()).willReturn(this.cart);
+      
+      //setCartSession returns the Cart.
+      this.mockMvc.perform(put("/cart/removeProductFromCart/{cartID}", cartID)
+			   .param("prod_ID", "hello500"))      
+	  .andExpect(status().isOk());
+      given(cartService.getAllCartProducts(cartID)).willReturn(productList);	
+      // confirm productList has been reduced by 1.
+      Assert.assertTrue(this.productList.size() == 2);
+      //confirm product with "hello500" pcode is not in list.
+      boolean found = false;
+      Iterator iter = productList.iterator();
+      
+      while(iter.hasNext()){
+       Product prod = (Product) iter.next();
+       if (prod.getPcode().equals("hello500")){
+	       found= true;
+	   }
+      }
+       Assert.assertTrue(found == false);
+       
+   }
 
    @Test   //R
-   public void allProductsCanBeRemovedFromCart(){}
+   public void allProductsCanBeRemovedFromCart() throws Exception{
+       
 
-   @Test   //R
-   public void cartTotalPriceDecreasesCorrectly(){
+   }
+
+   @Test   //PASS
+   public void cartTotalPriceDecreasesCorrectly() throws Exception{
+       
+       Assert.assertTrue(this.cart.getCartValue() == 6000);
+       // String cartID = this.cart.getCartID();	
+       Assert.assertTrue(cartID!=null);
+      
+      given(cartService.getCartByCartID(cartID)).willReturn(this.cart);
+      given(cartService.getCartInSession()).willReturn(this.cart);
+      
+      //setCartSession returns the Cart.
+      this.mockMvc.perform(put("/cart/removeProductFromCart/{cartID}", cartID)
+			   .param("prod_ID", "hello500"))      
+	  .andExpect(status().isOk());
+      
+      Assert.assertTrue(this.cart.getCartValue() < 6000);
+      Assert.assertTrue(this.cart.getCartValue() == 5000);
       
    }
 
@@ -168,7 +223,7 @@ public class CartControllerTest {
       //setCartSession returns the Cart.
       this.mockMvc.perform(get("/cart/setCartSession/{cartID}", cartID))
 	 .andExpect(status().isOk())
-	 .andExpect(jsonPath("$.[0]cartID", is(this.cart.getCartID())))         //should this be array?
+	 .andExpect(jsonPath("$.[0]cartID", is(this.cart.getCartID())))         //
 	 .andExpect(jsonPath("$[0].products.size()", is(productList.size())));
 
       //getSessionCart returns as expected from SESSION.
@@ -224,7 +279,7 @@ public class CartControllerTest {
       Assert.assertEquals(cart.getCartValue(), 6000);
    }
    
-   @Ignore  //tests that cart products increment and correct product is added.
+   @Test  //tests that cart products increment and correct product is added.
    public void shouldUpdateCartWithNewProducts() throws Exception {
       int cartValue = cart.getCartValue();
       

@@ -88,15 +88,23 @@ public class CartService {
 	return cart;
 	//return httpSession.getId();
     }
+
+        
+    public void removeProductFromCart(String code){
+	Query query = sessionFactory.getCurrentSession().createQuery("Product from Cart where code=:code");
+	query.setString("code", code);
+	Product product = (Product) query.uniqueResult();
+	sessionFactory.getCurrentSession().delete(product);
+    }
+
+
     
     public void removeFromCart(long productId) {
        //Cart cart = getShoppingCartInSession();
        //shoppingCart.removeItemFromCart(productId);
        //updateCartInSession(shoppingCart);
     }
-
-    
-    
+        
     public void saveCustomer(Customer customer){
 	
 	sessionFactory.getCurrentSession().saveOrUpdate(customer);

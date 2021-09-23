@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.Random;
+import java.util.Iterator;
+
 import javax.servlet.http.*; 
 
 /**
@@ -35,7 +37,7 @@ public class CartController {
        this.orderSystemService = orderSystemService;
        this.cartService = cartService;
    }
-
+    
    //Javascript traversal problem again.
    @RequestMapping(path = "getSessionCart/", method = RequestMethod.GET)
    public List<Cart> getSessionCart(){
@@ -61,7 +63,13 @@ public class CartController {
        listCart.add(cartSession);
        return listCart; //return the cart from session variable.
    }
-	
+
+    @RequestMapping(path = "deleteStockNote/{id}", method = RequestMethod.DELETE)
+    public void deleteFromCart(@PathVariable String id){
+	//orderSystemService.deleteStockNote(id); 
+    }
+
+    
    @PutMapping("/createCustomer/") 
    public void addCustomer(@RequestBody Customer customer) {
        cartService.saveCustomer(customer);
@@ -77,6 +85,43 @@ public class CartController {
        return listCart;
    }
 
+    @RequestMapping(path = "/removeProductFromCart/{cartID}", method = RequestMethod.PUT) 
+    public void removeFromCart(@PathVariable String cartID, @RequestParam String prod_ID){
+	//find the cart
+	Cart cart = cartService.getCartByCartID(cartID);
+	
+	//scroll through carts products..
+	List<Product> products = cart.getProducts();
+	Iterator iter = products.iterator();
+
+	while(iter.hasNext()){
+	    Product product = (Product) iter.next();
+	    //remove the product we do not want...
+	    if (product.getPcode().equals(prod_ID)){
+
+		//collect the selling price and subtract it from cart Total.
+		int deduct = product.getSellingPrice();
+		int value = cart.getCartValue();
+		int newValue = value - deduct;
+		//set cartValue
+		cart.setCartValue(newValue);
+
+		iter.remove();
+		break;
+	    }
+	}
+	
+	cart.setProducts(products);
+	// i. merge cart
+	cartService.mergeCart(cart);
+	
+	// ii. update cart in session...
+	cartService.setCartInSession(cart);
+	
+	// iii. increment stock
+	
+    }
+    
     //Bug: JSON is not returned to browser as Cart Object. 
     @RequestMapping(path = "/getCart/{cartID}", method = RequestMethod.GET) 
     public List<Cart> getCart(@PathVariable String cartID) {
@@ -102,35 +147,31 @@ public class CartController {
 	//List<Product> products
 	//dummy.setProducts() 
 	dummy.addProduct(product);
-	    //calculate total cost       //this could be a function to refactor!
+	//calculate total cost       //a function to refactor?
 	int cartValue = dummy.getCartValue();
 	cartValue += product.getSellingPrice();
-	dummy.setCartValue(cartValue);
-	
+	dummy.setCartValue(cartValue);	
 	cartService.mergeCart(dummy);
 	
-	
-
 	/*if (stocknote != null) {   //& stocknote qty > 0
+	    
 	    Product product = orderSystemService.getProductByPcode(pcode);
 	    //List<Product> products
 	    //dummy.setProducts() 
 	    dummy.addProduct(product);
-	    
-	    //calculate total cost       //this could be a function to refactor!
+	    //calculate total cost       //a function to refactor?
 	    int cartValue = dummy.getCartValue();
 	    cartValue += product.getSellingPrice();
-	    dummy.setCartValue(cartValue);
-	    
-	    cartService.mergeCart(dummy);
-	    
+	    dummy.setCartValue(cartValue);	
+	    //////////
+	    //dummy.addProduct(product);
 	    //reduce stock
 	    stocknote.reduceQTYByOne();
-	    orderSystemService.saveStockNote(stocknote);
-	    
-	    //product.getCarts().add(dummy);
-	    //orderSystemService.save(product);
-	    } */
+	    orderSystemService.saveStockNote(stocknote);	    
+	}
+	*/
+	
+	   
 	
 	return dummy;
    }
