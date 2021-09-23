@@ -125,34 +125,35 @@ public class CartControllerTest {
       this.cart = null;
    }
    
-   @Test
+   @Test  //S
    public void whenProductAddedToCartStocknoteQtyDecreases(){
 
    }
+    
+   @Test  //S  //R
+   public void whenProductRemoveToCartStocknoteQtyIncreases(){
 
-   @Test
+   }
+
+   @Test  //R
    public void productsAddToCartAfterOneOrAllRemoved(){}
 
-   @Test
-   public void stocknoteQtyDecreasesWhenAddCart(){}
-
-   @Test
+   @Test  //S
    public void outOfStockItemNotAdded(){}
 
-   @Test
+    @Test   //CART SESSION?
    public void noDuplicateCarts(){}
 
-   @Test
+   @Test   //R
    public void correctProductRemovedFromCart(){}
 
-   @Test
+   @Test   //R
    public void allProductsCanBeRemovedFromCart(){}
 
-   @Test
+   @Test   //R
    public void cartTotalPriceDecreasesCorrectly(){
       
    }
-
 
    
    @Test   //PASS

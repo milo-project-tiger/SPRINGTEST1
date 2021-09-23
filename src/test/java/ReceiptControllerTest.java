@@ -80,7 +80,7 @@ public class ReceiptControllerTest {
     
    private List<Product> productList;
 
-   private List<Receipt> receiptList;
+   private List<Receipt> receiptList  = new ArrayList();;
    
    private List<String> intList = new ArrayList();
    
@@ -101,7 +101,7 @@ public class ReceiptControllerTest {
    public void setUpData() {    
       //  objectMapper.registerModule(new ProblemModule());
       //objectMapper.registerModule(new ConstraintViolationProblemModule());
-
+      
       //receipt for Order of tiger beer.
       this.receipt = new Receipt();
       this.receipt.setPassPhrase("mojojojo");
@@ -110,18 +110,31 @@ public class ReceiptControllerTest {
       this.receipt.setOrderStatus("PENDING");
       this.receipt.setPayment("crypto");
       this.receipt.setShippingDetails("Ton Duc Tanh");
-      //this.receipt.setCart("tigerbeercart");
-      /*
-      this.receipt = new Receipt();
-      this.receipt.setPassPhrase("mojojojo");
-      this.receipt.setCustomerName("Morgana");
-      this.receipt.setDOB("090990");
-      this.receipt.setOrderStatus("PENDING");
-      this.receipt.setPayment("crypto");
-      this.receipt.setShippingDetails("Ton Duc Tanh"); */
-      //this.receipt.setCart("tigerbeercart");
 
-
+      Receipt receipt1 = this.receipt;
+      //this.receipt.setCart("tigerbeercart");
+      this.receiptList.add(receipt1);
+	
+      Receipt receipt2 = new Receipt();
+      receipt2.setPassPhrase("milomilomilo");
+      receipt2.setCustomerName("Bubbles");
+      receipt2.setDOB("010110");
+      receipt2.setOrderStatus("PENDING");
+      receipt2.setPayment("CASH");
+      receipt2.setShippingDetails("Ton Duc Tanh"); 
+     
+      //receipt2.setCart("lemonadecart");
+      this.receiptList.add(receipt2);
+	    
+      Receipt receipt3 = new Receipt();
+      receipt3.setPassPhrase("somtum");
+      receipt3.setCustomerName("mojojojo");
+      receipt3.setDOB("030330");
+      receipt3.setOrderStatus("PENDING");
+      receipt3.setPayment("crypto");
+      receipt3.setShippingDetails("Nguyen Van Linh"); 
+      //receipt3.setCart("weapons of mass destruction");
+      this.receiptList.add(receipt3);
       
       //list of products
       this.productList = new ArrayList<>();
@@ -141,13 +154,11 @@ public class ReceiptControllerTest {
       //given(cartService.getCartByCartID(cartID)).willReturn(this.cart);
 
       Assert.assertTrue(this.cartID!=null);
-
-
       
       // add the products to cart.
       // this.cart.setProducts(productList);
       
-       // when(cartService.mergeCart(any(Cart.class))).thenReturn(this.cart);    
+      // when(cartService.mergeCart(any(Cart.class))).thenReturn(this.cart);    
    }
     
    @After
@@ -162,13 +173,22 @@ public class ReceiptControllerTest {
 
       
    }
-
+   
+   @Test   //PASS
+   public void getAllReceiptsReturnsCorrectNumberOfResults() throws Exception{
+      
+      Assert.assertEquals(receiptList.size(), 3);
+      given(receiptService.getAllReceipts()).willReturn(this.receiptList);
+      
+      this.mockMvc.perform(get("/receipt/getAllReceipts/"))
+	 .andExpect(status().isOk())
+      .andExpect(jsonPath("$.size()", is(receiptList.size())));
+   }
+   
    @Test   //PASS
    public void orderStatusUpdatesCorrectly() throws Exception{
       // "changeStatus/{passPhrase}" //passPhrase status
       String pass = this.receipt.getPassPhrase();
-
-      
       
       //update status with acceptable value
       given(receiptService.getReceiptByPassPhrase(pass)).willReturn(this.receipt);
@@ -203,9 +223,6 @@ public class ReceiptControllerTest {
          
    }
    
-   @Test void getAllReceiptsReturnsCorrectNumberOfResults(){
-      
-   }
    
    @Test   //FAIL
    public void ReceiptFetchedCorrectlyByPassPhrase() throws Exception {
@@ -244,6 +261,4 @@ public class ReceiptControllerTest {
    public void receiptReturnsNullIfNoPassphraseORIncorrectFormatDOB(){
       
    }
-
-   
 }

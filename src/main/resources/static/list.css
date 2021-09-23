@@ -1,3 +1,19 @@
+div#orders{
+  color:white;
+  background-color:#1119 ;
+  margin-bottom:20;
+ 
+}
+div#orders>#r_status{
+  color:gold
+  ;
+}
+div#orders>#r_pass{
+  display:block;
+  color:lightblue;
+  margin-top:20;
+}
+
 div#productList:last-of-type{
   margin-bottom:60%;
 }

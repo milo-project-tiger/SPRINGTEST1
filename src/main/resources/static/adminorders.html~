@@ -1,5 +1,64 @@
 <html>
+  <head>
+    <link rel="stylesheet" type="text/css"  href="list.css" />
+  </head>
+  <header><span>YING YANG SPIRIT </span> <span>
+      Herbs & Curios </span> </header>
+  
+  <div class="user_notice_bar"> <span>User: </span> <span id="cart_inc"> </span> </div>
+  
+  <div id='orders'>   </div>
+  
+  <script>
+
+  function getOrders(){
+      var orders = document.getElementById('orders');
+      function getReceipt( ){
+	//alert("sanity")
+	  var orders = document.getElementById('orders');
+	var phrase = document.getElementById('search').value;
+	//var deleteLink = `<button>Remove Product</button>`
+	orders.innerHTML = ''
+
+	fetch('http://localhost:8080/receipt/getReceipt/'+ phrase,
+	      { headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          },
+          method: "PUT",
+          body: ""
+	      }).then(res => res.json())//.then(alert("ok")) 
+            .then(json => {
+	//	alert(json.length)
+		
+		for(i=0; i<json.length; i++){
+		    var pass = json[i].passPhrase
+		   //alert(pass);
+		    var status = json[i].orderStatus
+		    var shipping = json[i].shippingDetails
+		    var payment  = json[i].payment
+		    var total =   json[i].total 
+
+		    orders.innerHTML += "<div>";
+		    orders.innerHTML += "<span id='r_pass'>Order Code: "+ pass +  "</br></span>"
+		    orders.innerHTML += "<span id='r_shipping'>Shipping Details: "+ shipping +  "</br></span>"
+		    orders.innerHTML += "<span id='r_payment'>Payment: " + payment + "</br></span>"
+		    orders.innerHTML +="<span>Total: $" + json[i].total +"</br></span>"  
+		    orders.innerHTML += "<span id='r_status'>Order Progress: "+ status +  "</br></span>"
+		    orders.innerHTML += "<div>";
+		}
+	    })
+	
+	     
+    }
+  }
+      
+  function editOrderStatus(){
+      
+      
+  }
 
 
 
+  </script>
   </html>
