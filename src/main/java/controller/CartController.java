@@ -139,21 +139,12 @@ public class CartController {
     
     @RequestMapping(path = "/addProductToCart/{pcode}", method = RequestMethod.PUT) 
     public Cart addProductToCart(@PathVariable String pcode, @RequestParam String cartID) {
-	
+
 	Cart dummy = cartService.getCartByCartID(cartID);
 	dummy.setName("magickshoes");
 	StockNote stocknote =  orderSystemService.getStockNoteByPCode(pcode);
-	Product product = orderSystemService.getProductByPcode(pcode);
-	//List<Product> products
-	//dummy.setProducts() 
-	dummy.addProduct(product);
-	//calculate total cost       //a function to refactor?
-	int cartValue = dummy.getCartValue();
-	cartValue += product.getSellingPrice();
-	dummy.setCartValue(cartValue);	
-	cartService.mergeCart(dummy);
 	
-	/*if (stocknote != null) {   //& stocknote qty > 0
+	if (stocknote != null) {   //& stocknote qty > 0
 	    
 	    Product product = orderSystemService.getProductByPcode(pcode);
 	    //List<Product> products
@@ -167,11 +158,23 @@ public class CartController {
 	    //dummy.addProduct(product);
 	    //reduce stock
 	    stocknote.reduceQTYByOne();
-	    orderSystemService.saveStockNote(stocknote);	    
+	    orderSystemService.saveStockNote(stocknote);
+	    cartService.mergeCart(dummy);
 	}
-	*/
+	else {
+	    Product product = orderSystemService.getProductByPcode(pcode);
+	    //List<Product> products
+	    //dummy.setProducts() 
+	    dummy.addProduct(product);
+	    //calculate total cost       //this could be a function to refactor!
+	    int cartValue = dummy.getCartValue();
+	    cartValue += product.getSellingPrice();
+	    dummy.setCartValue(cartValue);
+	    
+	    cartService.mergeCart(dummy);
+	}
+       	
 	
-	   
 	
 	return dummy;
    }

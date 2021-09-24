@@ -168,7 +168,7 @@ public class ReceiptControllerTest {
       this.receipt = null;
    }   
 
-   @Test  
+   @Ignore 
    public void newOrderMustHaveUniqueCode(){
 
       
@@ -252,12 +252,12 @@ public class ReceiptControllerTest {
       */
    }
 
-   @Test
+   @Ignore
    public void receiptSavedandRetrievedCorrectly(){
       
    }
 
-   @Test
+   @Ignore
    public void receiptReturnsNullIfNoPassphraseORIncorrectFormatDOB(){
       
    }

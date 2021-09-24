@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import model.Product;
 import model.Cart;
+import model.StockNote;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -95,10 +96,12 @@ public class CartControllerTest {
       this.productList.add(new Product("Product2"));
       this.productList.add(new Product( "Product3"));
 
+      StockNote s1 = new StockNote();
+      
       Iterator iter = productList.iterator();
       int i = 1;
       int cartValue = 0;
-
+      
       //for all products, set a product code and price.
       while (iter.hasNext()){
 	 Product p = (Product) iter.next();
@@ -118,7 +121,7 @@ public class CartControllerTest {
       this.cart.setProducts(productList);
       this.cart.setCartValue(cartValue);
    }
-   
+    
    @After
    public void tearDown(){
       this.productList = null;
@@ -126,33 +129,37 @@ public class CartControllerTest {
    }
     
 
-   @Test
+   @Ignore    // Do
    public void productRemovedFromCartReflectedInSession(){
 
    }
     
-   @Test  //S
+   @Ignore  //S
    public void whenProductAddedToCartStocknoteQtyDecreases(){
        
        
    }
     
-   @Test  //S  //R
-   public void whenProductRemoveToCartStocknoteQtyIncreases(){
-
+   @Ignore  //S  //R    Do
+   public void whenProductRemoveFromCartStocknoteQtyIncreases(){
+       
        
    }
 
-   @Test  //R
+   @Ignore  //R
    public void productsAddToCartAfterOneOrAllRemoved(){
 
    }
 
-   @Test  //S
-   public void outOfStockItemNotAdded(){}
+   @Ignore  //S    DO
+   public void outOfStockItemNotAdded(){
+       
+   }
     
-    @Test   //CART SESSION?
-   public void noDuplicateCarts(){}
+    @Ignore   //CART SESSION?
+   public void noDuplicateCarts(){
+
+   }
 
    @Test   //PASS
    public void correctProductRemovedFromCart() throws Exception{
@@ -184,8 +191,8 @@ public class CartControllerTest {
        
    }
 
-   @Test   //R
-   public void allProductsCanBeRemovedFromCart() throws Exception{
+   @Ignore   //R
+   public void whenAllProductsAreRemovedFromCartItIsStillUsable() throws Exception{
        
 
    }
@@ -303,16 +310,18 @@ public class CartControllerTest {
          //ensure product price is incrementing rationally.
 	 .andExpect(jsonPath("$.cartValue", is(cartValue + prod.getSellingPrice())));
 
+      
       //test for 0 values giving false positives.
       Assert.assertTrue(prod.getSellingPrice() + cartValue != cartValue);
 
+      /*
       //add another.
       this.mockMvc.perform(put("/cart/addProductToCart/{pcode}", pcode2)
 			   .param("cartID", "cart303"))      
 	 .andExpect(status().isOk())
 	 .andExpect(jsonPath("$.products.size()", is(5)))
 	 .andExpect(jsonPath("$.cartValue", is(cart.getCartValue())));
-      
+      */
       // correctProductAddedToCart
    } 
 
