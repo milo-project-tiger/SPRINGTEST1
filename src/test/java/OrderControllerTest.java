@@ -89,7 +89,7 @@ public class OrderControllerTest {
       this.productList = null;
    }
     
-   @Test
+   @Test 
    public void shouldFetchAllProducts() throws Exception {
        
       given(orderSystemService.getAllProducts()).willReturn(productList);	

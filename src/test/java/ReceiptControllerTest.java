@@ -224,7 +224,7 @@ public class ReceiptControllerTest {
    }
    
    
-   @Test   //FAIL
+   @Test   //UAT PASSES, BUT TEST IS IN ERROR. THE CART TOTAL DOES NOT UPDATE IN TEST ONLY.
    public void ReceiptFetchedCorrectlyByPassPhrase() throws Exception {
       String pass = this.receipt.getPassPhrase();
       given(receiptService.getReceiptByPassPhrase(pass)).willReturn(this.receipt);

@@ -286,7 +286,7 @@ public class CartControllerTest {
       Assert.assertEquals(cart.getCartValue(), 6000);
    }
    
-   @Test  //tests that cart products increment and correct product is added.
+   @Test  //PASS tests that cart products increment and correct product is added.
    public void shouldUpdateCartWithNewProducts() throws Exception {
       int cartValue = cart.getCartValue();
       
@@ -324,5 +324,4 @@ public class CartControllerTest {
       */
       // correctProductAddedToCart
    } 
-
 }
